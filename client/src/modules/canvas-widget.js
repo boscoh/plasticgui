@@ -67,8 +67,7 @@ class CanvasWidget {
       (y <= this.y() + this.height()))
   }
 
-  draw () {
-  }
+  draw () {}
 
   resize () {
     this.canvasDom.width = this.width()

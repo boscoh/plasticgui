@@ -41,7 +41,9 @@ export default {
 
   delay (time) {
     return new Promise(function (resolve) {
-      setTimeout(function () { resolve(time) }, time)
+      setTimeout(function () {
+        resolve(time)
+      }, time)
     })
   },
 

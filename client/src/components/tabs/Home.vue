@@ -1,162 +1,119 @@
 <template>
-  <div
-    style="
-      height: calc(100vh - 48px);
-      overflow: auto">
+  <v-container fluid
+               grid-list-xl>
+    <v-layout row
+              wrap>
+      <v-flex xs12>
+        <h2>
+          Example Widgets
+        </h2>
+      </v-flex>
+    </v-layout>
+    <v-layout row
+              wrap>
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title primary-title
+                        class="headline">Server text</v-card-title>
+          <v-card-text>
+            {{ text }}
+          </v-card-text>
+        </v-card>
+      </v-flex>
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title primary-title
+                        class="headline">Webgl 3D Graphics</v-card-title>
+          <v-card-text>
+            <div style="width: 100%; height: 200px"
+                 id="webgl"></div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
 
-    <md-layout
-      style="
-        width: calc(100vw);
-        padding-left: 15px;
-        padding-right: 15px;">
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title primary-title
+                        class="headline">Canvas 2d Graphics</v-card-title>
+          <v-card-text>
+            <div id="rect"
+                 style="width: 200px; height: 200px"></div>
+            {{ pointerX }} - {{ pointerY }}
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row
+              wrap>
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title primary-title
+                        class="headline">File Download</v-card-title>
+          <v-card-text>
+            <div>
+              <v-btn @click="getReadme()">
+                Download Readme.md
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
 
-      <h2 style="width: 100%" class="md-display-2">
-        Example Widgets
-      </h2>
-
-      <md-layout md-flex="33">
-        <md-whiteframe md-flex="33">
-          <h3 class="md-title">Server text</h3>
-          {{ text }}
-        </md-whiteframe>
-      </md-layout>
-
-      <md-layout md-flex="33">
-        <md-whiteframe>
-          <h3 class="md-title">Webgl 3D Graphics</h3>
-          <div style="width: 100%; height: 200px" id="webgl"></div>
-        </md-whiteframe>
-      </md-layout>
-
-      <md-layout md-flex="33">
-        <md-whiteframe style="width: 500px">
-          <h3 class="md-title">Canvas 2d Graphics</h3>
-          <div id="rect" style="width: 200px; height: 200px"></div>
-          {{ pointerX }} - {{ pointerY }}
-        </md-whiteframe>
-      </md-layout>
-
-      <md-layout md-flex="33">
-        <md-whiteframe style="width: 500px">
-          <h3 class="md-title">File Download</h3>
-          <div>
-            <md-button
-              md-flex=true
-              class="md-raised"
-              @click="getReadme()">
-              Download Readme.md
-            </md-button>
-          </div>
-        </md-whiteframe>
-      </md-layout>
-
-      <md-layout md-flex="33">
-        <md-whiteframe style="overflow: auto">
-          <h3 class="md-title">File Upload</h3>
-
-          <div>
-            <md-layout md-row md-vertical-align="center">
-              <md-input-container style="">
-                <md-file
-                  id="file-input"
-                  multiple
-                  @selected="selectFiles">
-                </md-file>
-                <label
-                  for="file-input"
-                  class="button">
-                  Upload files
-                </label>
-              </md-input-container>
-
-              <div>
-                <md-button
-                  md-flex=true
-                  class="md-raised"
-                  @click="upload()">
-                  Upload
-                </md-button>
-              </div>
-            </md-layout>
-          </div>
-
-          <ul v-if="uploadFiles">
-            <li v-for="(file, i) in uploadFiles" :key="i">
-              <a :href="file">{{file}}</a>
-            </li>
-          </ul>
-
-          <div v-if="error" style="color: red">
-            {{ error }}
-          </div>
-
-        </md-whiteframe>
-      </md-layout>
-
-      <md-layout md-flex="33">
-        <md-whiteframe>
-          <h3 class="md-title">Live graphs</h3>
-
-          <div
-            v-for="(param, i) of sliders"
-            :key="i"
-            style="height: 2em">
-            <md-layout md-row md-vertical-align="center">
-              {{param.key}} = {{param.value.toFixed(1)}}
-              <div style="flex: 1">
-                <vue-slider
-                  ref="slider"
-                  tooltip="none"
-                  :interval="param.interval"
-                  @callback="changeGraph()"
-                  :max="param.max"
-                  v-model="param.value"/>
-              </div>
-            </md-layout>
-          </div>
-
-          <div style="margin-top: 1em">
-            <md-button
-              class="md-raised"
-              @click="randomizeGraph()">
-              random
-            </md-button>
-          </div>
-
-          <md-layout>
-            <div id="charts" style="flex: 1; height: 200px"></div>
-          </md-layout>
-        </md-whiteframe>
-      </md-layout>
-
-    </md-layout>
-
-    <div style="height: 2em"></div>
-
-  </div>
-
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title primary-title
+                        class="headline">Live graphs</v-card-title>
+          <v-card-text>
+            <div id="sliders">
+              <v-layout row
+                        v-for="(param, i) of sliders"
+                        :key="i">
+                <v-flex xs4>
+                  {{param.key}} = {{param.value.toFixed(1)}}
+                </v-flex>
+                <v-flex xs8>
+                  <v-slider ref="slider"
+                            :step="param.interval"
+                            @callback="changeGraph()"
+                            :max="param.max"
+                            v-model="param.value" />
+                </v-flex>
+              </v-layout>
+            </div>
+            <div style="margin-top: 1em">
+              <v-btn @click="randomizeGraph()">
+                random
+              </v-btn>
+            </div>
+            <v-layout>
+              <v-flex xs12
+                      id="charts"></v-flex>
+            </v-layout>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-  .md-whiteframe {
-    margin-right: 1em;
-    margin-top: 1em;
-    width: 100%;
-    padding: 1em;
-  }
+#sliders div {
+  margin: 0px;
+  padding: 0px;
+}
 </style>
 
 <script>
 import _ from 'lodash'
 
-import rpc from '../modules/rpc'
+import rpc from '../../modules/rpc'
 import vueSlider from 'vue-slider-component'
-import config from '../config'
-import ChartWidget from '../modules/chart-widget'
-import CanvasWidget from '../modules/canvas-widget'
-import Model from '../modules/model'
-import webglstarterkit from '../modules/webgl-widget'
+import config from '../../config'
+import ChartWidget from '../../modules/chart-widget'
+import CanvasWidget from '../../modules/canvas-widget'
+import Model from '../../modules/model'
+import webglstarterkit from '../../modules/webgl-widget'
 const THREE = require('three')
 
 function getRandomColor () {
@@ -258,6 +215,14 @@ export default {
       this.error = response.error.message
     }
   },
+  watch: {
+    sliders: {
+      handler () {
+        this.changeGraph()
+      },
+      deep: true
+    }
+  },
   methods: {
     async getReadme () {
       let response = await rpc.rpcDownload('publicDownloadGetReadme')
@@ -292,6 +257,7 @@ export default {
       }
     },
     changeGraph () {
+      console.log('changed graph', this.sliders)
       for (let slider of this.sliders) {
         this.model.params[slider.key] = slider.value
       }

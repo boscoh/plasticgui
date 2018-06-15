@@ -14,7 +14,11 @@ axios.defaults.withCredentials = true
 export default {
 
   async rpcRun (method, ...params) {
-    let payload = {method, params, jsonrpc: '2.0'}
+    let payload = {
+      method,
+      params,
+      jsonrpc: '2.0'
+    }
 
     console.log('> rpc.rpcRun', method, ...params)
 
@@ -57,7 +61,11 @@ export default {
   },
 
   async rpcDownload (method, ...params) {
-    let payload = {method, params, jsonrpc: '2.0'}
+    let payload = {
+      method,
+      params,
+      jsonrpc: '2.0'
+    }
 
     console.log('> rpc.rpcDownload', ...params)
 

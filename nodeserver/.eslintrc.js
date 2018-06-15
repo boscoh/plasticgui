@@ -4,7 +4,7 @@ module.exports = {
   root: true,
   parserOptions: {
     parser: 'babel-eslint',
-    ecmaVersion: 7
+    ecmaVersion: 2017
   },
   env: {
     browser: false,

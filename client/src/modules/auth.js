@@ -89,7 +89,9 @@ export default {
 
   logout () {
     localStorage.removeItem('user')
-    store.commit('setUser', {authenticated: false})
+    store.commit('setUser', {
+      authenticated: false
+    })
     return rpc.rpcRun('publicLogoutUser')
   }
 }
