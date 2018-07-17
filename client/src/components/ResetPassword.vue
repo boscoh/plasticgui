@@ -14,14 +14,16 @@
             <v-flex class="xs12">
               <v-text-field hint="At least 6 characters"
                             v-model="rawPassword"
+                            ref="password"
                             :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
                             :append-icon-cb="() => (passwordHidden = !passwordHidden)"
                             :type="passwordHidden ? 'password' : 'text'"
                             counter
                             label="Password"
                             :error-messages="errors.collect('password')"
-                            v-validate="'required|min:6|confirmed:$password_confirmation'"
-                            data-vv-name="password"></v-text-field>
+                            v-validate="'required|min:6'"
+                            data-vv-name="password"
+                            data-vv-delay="300"></v-text-field>
               <v-text-field hint="At least 6 characters"
                             v-model="rawPasswordConfirm"
                             :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
@@ -31,9 +33,10 @@
                             counter
                             label="Confirm Password"
                             :error-messages="errors.collect('password_confirmation')"
-                            v-validate="'required'"
-                            data-vv-name="password_confirmation"></v-text-field>
-              <div class="alert alert-danger">{{loginMessage}}</div>
+                            target="password"
+                            v-validate="'required|confirmed:password'"
+                            data-vv-name="password_confirmation"
+                            data-vv-delay="300"></v-text-field>
             </v-flex>
           </v-layout>
           <v-btn type="submit"
@@ -60,7 +63,9 @@ export default {
       title: 'Reset Password',
       tokenId,
       rawPassword: '',
+      passwordHidden: true,
       rawPasswordConfirm: '',
+      confirmPasswordHidden: true,
       error: ''
     }
   },

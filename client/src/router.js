@@ -8,6 +8,7 @@ import Login from './components/Login'
 import Register from './components/Register'
 import EditUser from './components/EditUser'
 import AdminUsers from './components/AdminUsers'
+import ForgotPassword from './components/ForgotPassword'
 import ResetPassword from './components/ResetPassword'
 
 Vue.use(Router)
@@ -49,7 +50,12 @@ let router = new Router({
     component: AdminUsers
   },
   {
-    path: '/reset-password/:tokenId',
+    path: '/forgotPassword',
+    name: 'forgotPassword',
+    component: ForgotPassword
+  },
+  {
+    path: '/resetPassword/:tokenId',
     name: 'resetPassword',
     component: ResetPassword
   }

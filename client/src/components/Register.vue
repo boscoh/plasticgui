@@ -47,7 +47,6 @@
                             v-validate="'required|confirmed:password'"
                             data-vv-name="password_confirmation"
                             data-vv-delay="300"></v-text-field>
-              <div class="alert alert-danger">{{loginMessage}}</div>
             </v-flex>
           </v-layout>
           <v-btn type="submit"

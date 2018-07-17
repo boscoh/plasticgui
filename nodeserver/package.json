@@ -36,6 +36,7 @@
     "fs-extra": "^5.0.0",
     "morgan": "*",
     "multer": "*",
+    "nodemailer": "^4.6.7",
     "opn": "^5.3.0",
     "passport": "*",
     "passport-local": "*",
@@ -44,6 +45,6 @@
     "sequelize": "*",
     "sequelize-json": "*",
     "shortid": "*",
-    "sqlite3": "*"
+    "sqlite3": "^4.0.2"
   }
 }

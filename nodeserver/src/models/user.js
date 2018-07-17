@@ -24,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
+    },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    resetPasswordExpiresOn: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   })
   User.associate = function (models) {

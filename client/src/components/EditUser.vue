@@ -15,7 +15,7 @@
               <v-text-field v-model="name"
                             label="User name"
                             :error-messages="errors.collect('name')"
-                            v-validate="'name'"
+                            v-validate="'required'"
                             data-vv-name="name"></v-text-field>
               <v-text-field v-model="email"
                             label="E-mail address"
@@ -42,7 +42,6 @@
                             :error-messages="errors.collect('Confirm_Password')"
                             v-validate="'required|confirmed:Password'"
                             data-vv-name="Confirm_Password"></v-text-field>
-              <div class="alert alert-danger">{{loginMessage}}</div>
             </v-flex>
           </v-layout>
           <v-btn type="submit"
@@ -71,7 +70,7 @@ export default {
       title: 'Edit Your Details',
       rawPassword: '',
       passwordHidden: true,
-      rawPasswordConfirm: '',
+      rawConfirmPassword: '',
       confirmPasswordHidden: true,
       error: ''
     })
