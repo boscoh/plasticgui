@@ -198,17 +198,17 @@ class Widget {
 
   // override these functions
 
-  mousescroll (wheel) { }
+  mousescroll (wheel) {}
 
-  mouseclick (x, y) { }
+  mouseclick (x, y) {}
 
-  mousedoubleclick (x, y) { }
+  mousedoubleclick (x, y) {}
 
-  leftmousedrag (x0, y0, x1, y1) { }
+  leftmousedrag (x0, y0, x1, y1) {}
 
-  rightmousedrag (x0, y0, x1, y1) { }
+  rightmousedrag (x0, y0, x1, y1) {}
 
-  gesturedrag (rot, scale) { }
+  gesturedrag (rot, scale) {}
 
   draw () {}
 
@@ -224,7 +224,6 @@ class Widget {
  */
 
 function registerWidgetForAnimation (widget) {
-
   function loop () {
     window.requestAnimationFrame(loop)
 
@@ -357,8 +356,7 @@ class WebglWidget extends Widget {
     }
   }
 
-  update () {
-  }
+  update () {}
 
   getSceneRadius () {
     let sceneRadius = 0.0
@@ -485,17 +483,13 @@ class WebglWidget extends Widget {
 
     return new THREE.Vector2()
       .set(
-        (vector.x * widthHalf) + widthHalf,
-        -(vector.y * heightHalf) + heightHalf
+        (vector.x * widthHalf) + widthHalf, -(vector.y * heightHalf) + heightHalf
       )
   }
 
   getClickedMeshes () {
     let screenXY = new THREE.Vector2()
-      .set(
-        -1 + this.pointerX / this.width() * 2,
-        +1 - this.pointerY / this.height() * 2
-      )
+      .set(-1 + this.pointerX / this.width() * 2, +1 - this.pointerY / this.height() * 2)
 
     this.raycaster.setFromCamera(screenXY, this.camera)
 
@@ -527,8 +521,8 @@ class WebglWidget extends Widget {
       return [r, t]
     }
 
-    let [r0, t0] = calcRadial(x0, y0)
-    let [r1, t1] = calcRadial(x1, y1)
+    let [r0] = calcRadial(x0, y0)
+    let [r1] = calcRadial(x1, y1)
 
     let ratio = 1.0
     if (r1 > 0.0) {

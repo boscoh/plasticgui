@@ -1,63 +1,60 @@
 <template>
-  <md-layout md-align="center">
-    <md-whiteframe style="margin-top: 4em; padding: 3em">
-      <md-layout md-flex="50" md-align="center" md-column>
+  <v-card>
+    <v-toolbar>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
+    </v-toolbar>
+    <v-card-text>
+      <form novalidate
+            class="login-screen"
+            v-on:submit.prevent="submit">
+        <v-container fluid
+                     grid-list-xl>
+          <v-layout row
+                    wrap>
+            <v-flex class="xs12">
+              <v-text-field v-model="name"
+                            label="User name"
+                            :error-messages="errors.collect('name')"
+                            v-validate="'required'"
+                            data-vv-name="name"></v-text-field>
+              <v-text-field v-model="email"
+                            label="E-mail address"
+                            :error-messages="errors.collect('email')"
+                            v-validate="'email'"
+                            data-vv-name="email"></v-text-field>
+              <v-text-field hint="At least 6 characters"
+                            v-model="rawPassword"
+                            :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
+                            :append-icon-cb="() => (passwordHidden = !passwordHidden)"
+                            :type="passwordHidden ? 'password' : 'text'"
+                            counter
+                            label="New Password"
+                            :error-messages="errors.collect('Password')"
+                            v-validate="'required|min:6'"
+                            data-vv-name="Password"></v-text-field>
+              <v-text-field hint="At least 6 characters"
+                            v-model="rawConfirmPassword"
+                            :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
+                            :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
+                            :type="confirmPasswordHidden ? 'password' : 'text'"
+                            counter
+                            label="Confirm New Password"
+                            :error-messages="errors.collect('Confirm_Password')"
+                            v-validate="'required|confirmed:Password'"
+                            data-vv-name="Confirm_Password"></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-btn type="submit"
+                 class="v-accent">Save</v-btn>
 
-        <h2 class="md-display-2">
-          {{ title }}
-        </h2>
-
-        <form v-on:submit.prevent="submit">
-
-          <md-input-container>
-            <label>User name</label>
-            <md-input
-              type='text'
-              v-model='name'
-              placeholder='User name'>
-            </md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>E-mail address</label>
-            <md-input
-              type='text'
-              v-model='email'
-              placeholder='E-mail address'>
-            </md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>New Password</label>
-            <md-input
-              type='password'
-              v-model='rawPassword'
-              placeholder='New Password'>
-            </md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>Confirm Password</label>
-            <md-input
-              type='password'
-              v-model='rawPasswordConfirm'
-              placeholder='Confirm Password'>
-            </md-input>
-          </md-input-container>
-
-          <md-button type="submit" class="md-raised md-primary">
-            Save
-          </md-button>
-
-          <div v-if="error" style="color: red">
-            {{error}}
+          <div v-if="error"
+               style="color: red">
+            {{ error }}
           </div>
-
-        </form>
-
-      </md-layout>
-    </md-whiteframe>
-  </md-layout>
+        </v-container>
+      </form>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -72,7 +69,9 @@ export default {
     _.assign(result, {
       title: 'Edit Your Details',
       rawPassword: '',
-      rawPasswordConfirm: '',
+      passwordHidden: true,
+      rawConfirmPassword: '',
+      confirmPasswordHidden: true,
       error: ''
     })
     return result

@@ -1,9 +1,8 @@
-const _ = require('lodash')
 const path = require('path')
 const fs = require('fs-extra')
-
+const del = require('del')
 const config = require('./config')
-const dbmodel = require('./dbmodel')
+const handlers = require('./handlers')
 
 /**
  *
@@ -28,90 +27,11 @@ const dbmodel = require('./dbmodel')
  *
  */
 
-async function publicRegisterUser (user) {
-  let errors = []
-  if (!user.name) {
-    errors.push('no user name')
-  }
-  if (!user.email) {
-    errors.push('no email')
-  }
-  if (!user.password) {
-    errors.push('no Password')
-  }
-
-  if (errors.length > 0) {
-    throw errors.join(', ').join(errors)
-  }
-
-  let values = {
-    name: user.name,
-    email: user.email,
-    password: user.password
-  }
-
-  try {
-    await dbmodel.createUser(values)
-    return {success: true}
-  } catch (e) {
-    throw 'Couldn\'t register, is your email already in use?'
-  }
-}
-
-/**
- * Updates user where the id field is used to identify the user.
- * @param {Object} user
- * @promise {User}
- */
-async function loginUpdateUser (user) {
-  const keys = ['id', 'name', 'email', 'password']
-  let values = {}
-  for (let key of keys) {
-    if (user[key]) {
-      values[key] = user[key]
-    }
-  }
-  if (!values) {
-    throw 'No values to update'
-  }
-  if (!values.id) {
-    throw 'No user.id to identify user'
-  }
-
-  try {
-    console.log('>> handlers.updateUser', values)
-    await dbmodel.updateUser(values)
-    return {success: true}
-  } catch (err) {
-    throw 'Couldn\'t update user - ' + err.toString()
-  }
-}
-
-async function publicResetPassword (tokenId, password) {
-  let values  = {
-    id: tokenId,
-    password
-  }
-  if (!values.id) {
-    throw 'No user.id to identify user'
-  }
-
-  try {
-    console.log('>> handlers.publicResetPassword', values)
-    await dbmodel.updateUser(values)
-    return {success: true}
-  } catch (err) {
-    throw `Update failure ${err}`
-  }
-}
-
 // TODO: adminGetUsers, adminDeleteUsers
 
 // user defined
 
-
-async function updateDatabaseOnInit () {
-}
+async function updateDatabaseOnInit () {}
 
 updateDatabaseOnInit()
 
@@ -119,19 +39,21 @@ updateDatabaseOnInit()
  * Specific handlers - promises that return a JSON literal
  */
 
-async function publicGetText() {
+async function publicGetText () {
   return {
-    "text": "Example text from local webserver",
-    "isRunning": true
+    'text': 'Example text from local webserver',
+    'isRunning': true
   }
 }
 
 async function publicDownloadGetReadme () {
-  payload = {
-    "filename": path.resolve("readme.md"),
-    "data": { "success": true}
+  let payload = {
+    'filename': path.resolve('readme.md'),
+    'data': {
+      'success': true
+    }
   }
-  console.log("> publicGetReadme", payload)
+  console.log('> publicGetReadme', payload)
   return payload
 }
 
@@ -147,14 +69,67 @@ async function publicUploadFiles (fileList) {
     fs.renameSync(file.path, fullTargetPath)
     targetPaths.push('/file/' + targetPath)
   }
-  console.log("> publicUploadFiles", targetPaths)
-  return { files: targetPaths }
+  console.log('> publicUploadFiles', targetPaths)
+  return {
+    files: targetPaths
+  }
 }
 
-module.exports = {
-  publicRegisterUser,
-  loginUpdateUser,
-  publicGetText,
-  publicDownloadGetReadme,
-  publicUploadFiles
+/**
+ * Moves fileList to a time-stamped sub-directory in config.filesDir.
+ * Optional checking function can throw Exceptions for bad files.
+ * @param fileList
+ * @param checkFilesForError
+ * @promise - list of new paths
+ */
+
+async function deleteFileList (fileList) {
+  for (let f of fileList) {
+    if (fs.existsSync(f.path)) {
+      console.log('>> router.deleteFileList', f.path)
+      await del(f.path)
+    }
+  }
 }
+
+async function storeFilesInConfigDir (fileList, checkFilesForError) {
+  try {
+    const timestampDir = String(new Date().getTime())
+    const fullDir = path.join(config.filesDir, timestampDir)
+    if (!fs.existsSync(fullDir)) {
+      fs.mkdirSync(fullDir, 0o744)
+    }
+
+    if (checkFilesForError) {
+      let error = checkFilesForError(fileList)
+      if (error) {
+        throw new Error(error)
+      }
+    }
+
+    let targetPaths = []
+    for (let file of fileList) {
+      let basename = path.basename(file.originalname)
+      let targetPath = path.join(timestampDir, basename)
+      targetPaths.push(targetPath)
+
+      let fullTargetPath = path.join(config.filesDir, targetPath)
+      fs.renameSync(file.path, fullTargetPath)
+
+      console.log(`>> router.storeFilesInConfigDir ${targetPath}`)
+    }
+
+    return targetPaths
+  } catch (error) {
+    await deleteFileList(fileList)
+    throw error
+  }
+}
+
+module.exports = Object.assign(
+  handlers, {
+    publicGetText,
+    publicDownloadGetReadme,
+    publicUploadFiles,
+    storeFilesInConfigDir
+  })

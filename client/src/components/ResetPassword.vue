@@ -1,45 +1,55 @@
 <template>
-  <md-layout md-align="center">
-    <md-whiteframe style="margin-top: 4em; padding: 3em">
-      <md-layout md-flex="50" md-align="center" md-column>
+  <v-card>
+    <v-toolbar>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
+    </v-toolbar>
+    <v-card-text>
+      <form novalidate
+            class="login-screen"
+            v-on:submit.prevent="submit">
+        <v-container fluid
+                     grid-list-xl>
+          <v-layout row
+                    wrap>
+            <v-flex class="xs12">
+              <v-text-field hint="At least 6 characters"
+                            v-model="rawPassword"
+                            ref="password"
+                            :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
+                            :append-icon-cb="() => (passwordHidden = !passwordHidden)"
+                            :type="passwordHidden ? 'password' : 'text'"
+                            counter
+                            label="Password"
+                            :error-messages="errors.collect('password')"
+                            v-validate="'required|min:6'"
+                            data-vv-name="password"
+                            data-vv-delay="300"></v-text-field>
+              <v-text-field hint="At least 6 characters"
+                            v-model="rawPasswordConfirm"
+                            :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
+                            ref="password_confirmation"
+                            :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
+                            :type="confirmPasswordHidden ? 'password' : 'text'"
+                            counter
+                            label="Confirm Password"
+                            :error-messages="errors.collect('password_confirmation')"
+                            target="password"
+                            v-validate="'required|confirmed:password'"
+                            data-vv-name="password_confirmation"
+                            data-vv-delay="300"></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-btn type="submit"
+                 class="v-accent">Save</v-btn>
 
-        <h2 class="md-display-2">
-          {{ title }}
-        </h2>
-
-        <form v-on:submit.prevent="submit">
-
-          <md-input-container>
-            <label>New Password</label>
-            <md-input
-              type='password'
-              v-model='rawPassword'
-              placeholder='New Password'>
-            </md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>Confirm Password</label>
-            <md-input
-              type='password'
-              v-model='rawPasswordConfirm'
-              placeholder='Confirm Password'>
-            </md-input>
-          </md-input-container>
-
-          <md-button type="submit" class="md-raised md-primary">
-            Save
-          </md-button>
-
-          <div v-if="error" style="color: red">
-            {{error}}
+          <div v-if="error"
+               style="color: red">
+            {{ error }}
           </div>
-
-        </form>
-
-      </md-layout>
-    </md-whiteframe>
-  </md-layout>
+        </v-container>
+      </form>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -53,7 +63,9 @@ export default {
       title: 'Reset Password',
       tokenId,
       rawPassword: '',
+      passwordHidden: true,
       rawPasswordConfirm: '',
+      confirmPasswordHidden: true,
       error: ''
     }
   },

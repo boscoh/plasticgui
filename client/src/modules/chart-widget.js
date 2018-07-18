@@ -8,7 +8,9 @@ import Chart from 'chart.js'
 function makeLineChartData (title, xAxisLabel, yAxisLabel) {
   return {
     type: 'scatter',
-    data: {datasets: []},
+    data: {
+      datasets: []
+    },
     options: {
       title: {
         display: true,
@@ -102,7 +104,10 @@ class ChartWidget {
     let newDatasetData = []
     if (xValues && yValues) {
       for (let i = 0; i < xValues.length; i += 1) {
-        newDatasetData.push({x: xValues[i], y: yValues[i]})
+        newDatasetData.push({
+          x: xValues[i],
+          y: yValues[i]
+        })
       }
     }
     let iDataset = datasets.length
@@ -122,7 +127,10 @@ class ChartWidget {
   updateDataset (iDataset, xValues, yValues) {
     let data = []
     for (let i = 0; i < xValues.length; i += 1) {
-      data.push({x: xValues[i], y: yValues[i]})
+      data.push({
+        x: xValues[i],
+        y: yValues[i]
+      })
     }
     let dataset = this.getDatasets()[iDataset]
     dataset.data = data

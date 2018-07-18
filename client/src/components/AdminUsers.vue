@@ -1,35 +1,33 @@
 <template>
-  <div style="padding: 10px">
-
-    <h2 class="md-display-2">
-      Users
-    </h2>
-
-    <md-list>
-      <md-list-item
-        v-for="user of users"
-        :key="user.id">
-        {{ user.name }} - {{user.email}}
-        <md-button
-          @click="deleteUser(user.id)">
-          <md-icon
-            md-mini>
-            delete
-          </md-icon>
-        </md-button>
-      </md-list-item>
-    </md-list>
-
-  </div>
+  <v-card>
+    <v-toolbar>
+      <v-toolbar-title>Users</v-toolbar-title>
+    </v-toolbar>
+    <v-card-text>
+      <v-list>
+        <v-list-item v-for="user of users"
+                     :key="user.id">
+          {{ user.name }} - {{user.email}}
+          <v-button @click="deleteUser(user.id)">
+            <v-icon v-mini>
+              delete
+            </v-icon>
+          </v-button>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 import rpc from '../modules/rpc'
+import config from '../config'
 
 export default {
   name: 'AdminUser',
   data () {
     return {
+      title: config.title,
       users: []
     }
   },
