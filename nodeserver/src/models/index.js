@@ -5,16 +5,21 @@ const path = require('path')
 const Sequelize = require('sequelize')
 const basename = path.basename(__filename)
 const env = process.env.NODE_ENV || 'development'
-const dbConfig = require('../config')[env]
+const config = require('../config')[env]
+const dbConfig = config.db
+
 const db = {}
 
 db.Sequelize = Sequelize
 db.sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig)
+db.config = config
 db.unwrapInstance = function (instance) {
   if (instance === null) {
     return null
   } else {
-    return instance.get({ plain: true })
+    return instance.get({
+      plain: true
+    })
   }
 }
 

@@ -1,13 +1,12 @@
-
 # plasticgui
 
 Plasticgui is a template GUI for prototyping data-visualisations using RPC protocols
 
 Out of the box, it includes:
 
-- Vue framework with Google Material design
+- Vue framework with Google Material design using [vuetify](https://vuetifyjs.com/en/getting-started/quick-start)
 - Webpack hot-reloading for client development
-- easily switch from static web-page to client/server 
+- easily switch from static web-page to client/server
 - choice of server in Node.js or Python 2/3
 - robust rpc talk between client and server
 - basic user system with secure passwords
@@ -17,29 +16,29 @@ Out of the box, it includes:
 
 First, download the [package](https://github.com/boscoh/plasticgui/archive/master.zip)
 
-1. To quickly run PlasticGui in the client/Nodejs-server combo, in the  `nodeserver` directory, install the dependencies:
+1.  To quickly run PlasticGui in the client/Nodejs-server combo, in the `nodeserver` directory, install the dependencies:
 
-   ```
-   > npm install
-   ```
+    ```
+    > npm install
+    ```
 
-   Then in the `plasticgui` directory:
+    Then in the `plasticgui` directory:
 
-   ```
-   > node gui.js
-   ```
+    ```
+    > node gui.js
+    ```
 
-2. Alternatively, for the Python server version, in the `pyserver` directory, install
+2.  Alternatively, for the Python server version, in the `pyserver` directory, install
 
-   ```
-   > pip install -r requirements.txt
-   ```
+    ```
+    > pip install -r requirements.txt
+    ```
 
-   Then in the `plasticgui` directory:
+    Then in the `plasticgui` directory:
 
-   ```
-   > python gui.py
-   ```
+    ```
+    > python gui.py
+    ```
 
 This will open the template client that can talk to a local server: fetching text, register/login users, download/upload files.
 
@@ -53,7 +52,7 @@ I wrote this webapp template to provide the minimum architecture required to sea
 
 First off, the client is a single-page-application architecture. This allows the client to be detached from the server, and even allows the client to talk to servers in different languages. As well, this results in easier-to-read code due to separation of concerns.
 
-The client is written in the Vue framework, as Vue is small and works well with other Javascript libraries. As well, Vue leverages HTML and CSS directly -  I really like Vue templates that mixes HTML, CSS and Javascript in one single file for a given component/web-page. 
+The client is written in the Vue framework, as Vue is small and works well with other Javascript libraries. As well, Vue leverages HTML and CSS directly - I really like Vue templates that mixes HTML, CSS and Javascript in one single file for a given component/web-page.
 
 The client is setup with webpack that allows compilation to a static web-page, which can opened from the command-line. Webpack also makes it easy to transpile from ES6, leading to more readable and concise code.
 
@@ -65,7 +64,7 @@ As well, the web-pack configuration allows hot-reloading the client, which is gr
 
 You can access the client at `http://localhost:8080`. As you change the source code, the client will hot-reload! If the server is running, CORS has been enabled to allow the client at port 8080 to talk to the server at port 3000.
 
-To get started, the first file you will work on will be `client/src/components/Home.vue`. The components in that file are from [Vue Material](https://vue-material-old.netlify.com/). This is a Google Material Design library written for Vue. From experience, using a slick and comprehensive theme such as Google Material Design will save a lot of time later on. Google Material Design has many well-designed components readily, which are  web-responsive and works well with desktop and mobile.
+To get started, the first file you will work on will be `client/src/components/Home.vue`. The components in that file are from [vuetify](https://vuetifyjs.com/en/getting-started/quick-start). This is a Google Material Design library written for Vue. From experience, using a slick and comprehensive theme such as Google Material Design will save a lot of time later on. Google Material Design has many well-designed components readily, which are web-responsive and works well with desktop and mobile.
 
 To help things along, I've included two wrappers, `chartContainer` and `CanvasWidget`. These are convenient classes that simplify the API to `chart.js` for interactive charts, and to the HTML `canvas` element for raster graphics.
 
@@ -77,7 +76,7 @@ There are quite a few different ways of communicating to the server, the most po
 
 I've found for data visualization, the data will often need to be massaged and transformed, and will unlikely be stored in a database. This makes it extremely tedious to map to a static REstful interface. Instead, the RPC approach allows the client to call Javascript functions in the server. The downside is if your data starts increasing in complexity then you'll be writing a lot of interfacing Javascript functions. However, that is far off in the future, and now you just want to be prototyping.
 
-To do any kind of communicating, you need matching end-points on the client and the server. The infrastructure allows the  `rpc` module in the client builds to call functions directly in the  `handler` module in the server. There are four basic ways the client can talk to the server:
+To do any kind of communicating, you need matching end-points on the client and the server. The infrastructure allows the `rpc` module in the client builds to call functions directly in the `handler` module in the server. There are four basic ways the client can talk to the server:
 
 - basic functions
 - file upload functions
@@ -110,12 +109,17 @@ how to deploy the server, autoreloading for development
 
 deployment
 
-## TODO 
+## TODO
 
-* admin reset password on server; resetToken field in user
-* test object database table
-* adminGetUsers/adminDeleteUsers in nodeserver
-* switch to vuetify
-* email to lowercase
++ admin reset password on server; resetToken field in user
++ switch to vuetify
+- test object database table
+- adminGetUsers/adminDeleteUsers in nodeserver
+- email to lowercase
 
+## Change-log
+
+- Michael Joss
+    - switch to Vuetify
+    - reset Passwords
   ​

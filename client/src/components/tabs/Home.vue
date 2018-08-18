@@ -1,54 +1,81 @@
 <template>
-  <v-container fluid
-               grid-list-xl>
-    <v-layout row
-              wrap>
+  <v-container
+      fluid
+      grid-list-xl>
+
+    <v-layout
+        row
+        wrap>
       <v-flex xs12>
         <h2>
           Example Widgets
         </h2>
       </v-flex>
     </v-layout>
-    <v-layout row
-              wrap>
+
+    <v-layout
+        row
+        wrap>
+
       <v-flex xs4>
         <v-card height="100%">
-          <v-card-title primary-title
-                        class="headline">Server text</v-card-title>
+          <v-card-title
+              primary-title
+              class="headline">
+            Server text
+          </v-card-title>
           <v-card-text>
             {{ text }}
-          </v-card-text>
-        </v-card>
-      </v-flex>
-      <v-flex xs4>
-        <v-card height="100%">
-          <v-card-title primary-title
-                        class="headline">Webgl 3D Graphics</v-card-title>
-          <v-card-text>
-            <div style="width: 100%; height: 200px"
-                 id="webgl"></div>
           </v-card-text>
         </v-card>
       </v-flex>
 
       <v-flex xs4>
         <v-card height="100%">
-          <v-card-title primary-title
-                        class="headline">Canvas 2d Graphics</v-card-title>
+          <v-card-title
+              primary-title
+              class="headline">
+            Webgl 3D Graphics
+          </v-card-title>
           <v-card-text>
-            <div id="rect"
-                 style="width: 200px; height: 200px"></div>
+            <div
+                style="width: 100%; height: 200px"
+                id="webgl">
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title
+              primary-title
+              class="headline">
+            Canvas 2d Graphics
+          </v-card-title>
+          <v-card-text>
+            <div
+                id="rect"
+                style="width: 200px; height: 200px">
+            </div>
             {{ pointerX }} - {{ pointerY }}
           </v-card-text>
         </v-card>
       </v-flex>
+
     </v-layout>
-    <v-layout row
-              wrap>
+
+    <v-layout
+        row
+        wrap>
+
       <v-flex xs4>
         <v-card height="100%">
-          <v-card-title primary-title
-                        class="headline">File Download</v-card-title>
+          <v-card-title
+              primary-title
+              class="headline">
+            File Download
+          </v-card-title>
           <v-card-text>
             <div>
               <v-btn @click="getReadme()">
@@ -61,22 +88,27 @@
 
       <v-flex xs4>
         <v-card height="100%">
-          <v-card-title primary-title
-                        class="headline">Live graphs</v-card-title>
+          <v-card-title
+              primary-title
+              class="headline">
+            Live graphs
+          </v-card-title>
           <v-card-text>
             <div id="sliders">
-              <v-layout row
-                        v-for="(param, i) of sliders"
-                        :key="i">
+              <v-layout
+                  row
+                  v-for="(param, i) of sliders"
+                  :key="i">
                 <v-flex xs4>
                   {{param.key}} = {{param.value.toFixed(1)}}
                 </v-flex>
                 <v-flex xs8>
-                  <v-slider ref="slider"
-                            :step="param.interval"
-                            @callback="changeGraph()"
-                            :max="param.max"
-                            v-model="param.value" />
+                  <v-slider
+                      ref="slider"
+                      :step="param.interval"
+                      @callback="changeGraph()"
+                      :max="param.max"
+                      v-model="param.value" />
                 </v-flex>
               </v-layout>
             </div>
@@ -86,12 +118,15 @@
               </v-btn>
             </div>
             <v-layout>
-              <v-flex xs12
-                      id="charts"></v-flex>
+              <v-flex
+                  xs12
+                  id="charts">
+              </v-flex>
             </v-layout>
           </v-card-text>
         </v-card>
       </v-flex>
+
     </v-layout>
   </v-container>
 </template>

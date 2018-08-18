@@ -12,37 +12,31 @@
           <v-layout row
                     wrap>
             <v-flex class="xs12">
-              <v-text-field v-model="name"
-                            label="User name"
-                            :error-messages="errors.collect('name')"
-                            v-validate="'name'"
-                            data-vv-name="name"></v-text-field>
-              <v-text-field v-model="email"
-                            label="E-mail address"
-                            :error-messages="errors.collect('email')"
-                            v-validate="'email'"
-                            data-vv-name="email"></v-text-field>
               <v-text-field hint="At least 6 characters"
                             v-model="rawPassword"
+                            ref="password"
                             :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
                             :append-icon-cb="() => (passwordHidden = !passwordHidden)"
                             :type="passwordHidden ? 'password' : 'text'"
                             counter
-                            label="New Password"
-                            :error-messages="errors.collect('Password')"
+                            label="Password"
+                            :error-messages="errors.collect('password')"
                             v-validate="'required|min:6'"
-                            data-vv-name="Password"></v-text-field>
+                            data-vv-name="password"
+                            data-vv-delay="300"></v-text-field>
               <v-text-field hint="At least 6 characters"
-                            v-model="rawConfirmPassword"
+                            v-model="rawPasswordConfirm"
                             :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
+                            ref="password_confirmation"
                             :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
                             :type="confirmPasswordHidden ? 'password' : 'text'"
                             counter
-                            label="Confirm New Password"
-                            :error-messages="errors.collect('Confirm_Password')"
-                            v-validate="'required|confirmed:Password'"
-                            data-vv-name="Confirm_Password"></v-text-field>
-              <div class="alert alert-danger">{{loginMessage}}</div>
+                            label="Confirm Password"
+                            :error-messages="errors.collect('password_confirmation')"
+                            target="password"
+                            v-validate="'required|confirmed:password'"
+                            data-vv-name="password_confirmation"
+                            data-vv-delay="300"></v-text-field>
             </v-flex>
           </v-layout>
           <v-btn type="submit"
@@ -59,41 +53,30 @@
 </template>
 
 <script>
-import auth from '../modules/auth'
-import _ from 'lodash'
-
+import auth from '../../modules/auth'
 export default {
-  name: 'EditUser',
+  name: 'ResetPassword',
   data () {
-    let result = {}
-    _.assign(result, this.$store.state.user)
-    _.assign(result, {
-      title: 'Edit Your Details',
+    let tokenId = this.$route.params.tokenId
+    console.log(`> ResetPassword tokenId=${tokenId}`)
+    return {
+      title: 'Reset Password',
+      tokenId,
       rawPassword: '',
       passwordHidden: true,
       rawPasswordConfirm: '',
       confirmPasswordHidden: true,
       error: ''
-    })
-    return result
+    }
   },
   methods: {
     async submit () {
       this.error = ''
-
-      let payload = {}
-      const keys = ['id', 'name', 'email', 'rawPassword', 'rawPasswordConfirm']
-      for (let key of keys) {
-        if (this.$data[key]) {
-          payload[key] = this.$data[key]
-        }
-      }
-
-      let response = await auth.update(payload)
+      let response = await auth.resetPassword(this.tokenId, this.rawPassword)
       if (response.result) {
-        this.error = 'User updated'
+        this.error = 'Password reset'
       } else {
-        console.log('> EditUser.submit fail', response)
+        console.log('> ResetPassword.submit fail', response)
         this.error = response.error.message
       }
     }

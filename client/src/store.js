@@ -1,3 +1,11 @@
+/**
+ * @file Central storage place for the app. All globally
+ * available data should be stored here. Any componenent
+ * can access this via this.$store, or importing this
+ * module as a singleton. The storage object is a Vuex
+ * object and uses mutations and accessors.
+ */
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 
