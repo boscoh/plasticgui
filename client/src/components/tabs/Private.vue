@@ -19,6 +19,7 @@
       <p>
         This page is only shown if the user has been logged-in.
       </p>
+
     </v-layout>
   </v-container>
 </template>

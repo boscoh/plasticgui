@@ -26,7 +26,7 @@ const router = express.Router()
 module.exports = router
 
 // the remote functions availabe for the RPC-JSON api
-const remoteRunFns = require('./handler')
+const remoteRunFns = require('./handlers')
 
 /**
  * This is the main interface to the JSON-RPC api. It is a post

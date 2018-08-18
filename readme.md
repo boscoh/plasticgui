@@ -113,8 +113,8 @@ deployment
 
 + admin reset password on server; resetToken field in user
 + switch to vuetify
++ adminGetUsers/adminDeleteUsers in nodeserver
 - test object database table
-- adminGetUsers/adminDeleteUsers in nodeserver
 - email to lowercase
 
 ## Change-log

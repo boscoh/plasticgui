@@ -18,7 +18,7 @@ const config = require('./config')
 
 // Defines express app and sqlalchemy db here to avoid circular dependencies
 const conn = require('./conn')
-const handler = require('./handler')
+const handler = require('./handlers')
 let app = conn.app
 module.exports = app
 
