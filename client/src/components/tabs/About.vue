@@ -20,6 +20,7 @@
         This is a skeleton for a Vue-app with user system and
         a local web-server.
       </p>
+
     </v-layout>
   </v-container>
 </template>

@@ -1,7 +1,14 @@
 'use strict'
+/**
+ * Handlers are async functions that return a
+ * JSON literal, or functions that return a Promise
+ * that returns a JSON literal
+ */
 
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
+const config = require('../config')
+
 const basename = path.basename(__filename)
 let handlers = []
 
@@ -33,26 +40,8 @@ async function publicDownloadGetReadme () {
       'success': true
     }
   }
-  console.log('> publicGetReadme', payload)
+  console.log('>> handlers.publicGetReadme', payload)
   return payload
-}
-
-async function publicUploadFiles (fileList) {
-  const timestampDir = String(new Date().getTime())
-  const fullDir = path.join(config.filesDir, timestampDir)
-  fs.ensureDirSync(fullDir)
-  let targetPaths = [] //
-  for (let file of fileList) {
-    let basename = path.basename(file.originalname)
-    let targetPath = path.join(timestampDir, basename)
-    let fullTargetPath = path.join(config.filesDir, targetPath)
-    fs.renameSync(file.path, fullTargetPath)
-    targetPaths.push('/file/' + targetPath)
-  }
-  console.log('> publicUploadFiles', targetPaths)
-  return {
-    files: targetPaths
-  }
 }
 
 /**
@@ -66,7 +55,7 @@ async function publicUploadFiles (fileList) {
 async function deleteFileList (fileList) {
   for (let f of fileList) {
     if (fs.existsSync(f.path)) {
-      console.log('>> router.deleteFileList', f.path)
+      console.log('>> handlers.deleteFileList', f.path)
       await del(f.path)
     }
   }
@@ -96,7 +85,7 @@ async function storeFilesInConfigDir (fileList, checkFilesForError) {
       let fullTargetPath = path.join(config.filesDir, targetPath)
       fs.renameSync(file.path, fullTargetPath)
 
-      console.log(`>> router.storeFilesInConfigDir ${targetPath}`)
+      console.log(`>> handlers.storeFilesInConfigDir ${targetPath}`)
     }
 
     return targetPaths
@@ -106,12 +95,32 @@ async function storeFilesInConfigDir (fileList, checkFilesForError) {
   }
 }
 
+async function publicUploadFiles (fileList) {
+  const timestampDir = String(new Date().getTime())
+  const filesDir = config.development.filesDir
+  console.log('publicUploadFiles', filesDir)
+  const fullDir = path.join(filesDir, timestampDir)
+  fs.ensureDirSync(fullDir)
+  let targetPaths = [] //
+  for (let file of fileList) {
+    console.log('publicUploadFiles', file)
+    let basename = path.basename(file.originalname)
+    let targetPath = path.join(timestampDir, basename)
+    let fullTargetPath = path.join(filesDir, targetPath)
+    console.log('publicUploadFiles', targetPath, fullTargetPath)
+    fs.renameSync(file.path, fullTargetPath)
+    targetPaths.push('/file/' + targetPath)
+  }
+  console.log('>> handlers.publicUploadFiles', targetPaths)
+  return {
+    files: targetPaths
+  }
+}
+
 handlers.push({
   publicGetText,
   publicDownloadGetReadme,
   publicUploadFiles,
-  deleteFileList,
-  storeFilesInConfigDir
 })
 
 module.exports = Object.assign(...handlers)

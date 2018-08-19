@@ -114,8 +114,11 @@ deployment
 + admin reset password on server; resetToken field in user
 + switch to vuetify
 + adminGetUsers/adminDeleteUsers in nodeserver
-- test object database table
+- test object database table - messaging objects
 - email to lowercase
+- downloading binary files
+- upload
+- start admin users
 
 ## Change-log
 

@@ -3,16 +3,17 @@
 const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
-const basename = path.basename(__filename)
 const env = process.env.NODE_ENV || 'development'
 const config = require('../config')[env]
-const dbConfig = config.db
+
+const basename = path.basename(__filename)
 
 const db = {}
 
+db.config = config.db
 db.Sequelize = Sequelize
-db.sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig)
-db.config = config
+db.sequelize = new Sequelize(db.config.database, db.config.username, db.config.password, db.config)
+
 db.unwrapInstance = function (instance) {
   if (instance === null) {
     return null
@@ -24,6 +25,7 @@ db.unwrapInstance = function (instance) {
 }
 
 db.sequelize.define()
+
 fs
   .readdirSync(__dirname)
   .filter(file => {

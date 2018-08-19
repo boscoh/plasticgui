@@ -48,21 +48,30 @@
           left
           open-on-hover
           v-if="user.authenticated">
+
         <v-btn
             slot="activator"
             color="indigo">
           {{user.name}}
           <v-icon>arrow_drop_down</v-icon>
         </v-btn>
+
         <v-list>
           <v-list-tile @click="editUser">
-            <v-list-tile-title>Edit User</v-list-tile-title>
+            <v-list-tile-title>
+              Edit User
+            </v-list-tile-title>
           </v-list-tile>
+
           <v-list-tile @click="logout">
-            <v-list-tile-title>Logout</v-list-tile-title>
+            <v-list-tile-title>
+              Logout
+            </v-list-tile-title>
           </v-list-tile>
         </v-list>
+
       </v-menu>
+
       <v-btn
           v-else
           dark
@@ -70,6 +79,7 @@
           to='/login'>
         Login
       </v-btn>
+
     </div>
 
   </v-toolbar>
@@ -107,10 +117,6 @@ export default {
 }
 </script>
 <style scoped>
-@font-face {
-  font-family: Clip;
-  src: url("/static/assets/Clip.ttf");
-}
 .tabs {
   width: 50%;
 }

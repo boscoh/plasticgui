@@ -74,23 +74,6 @@
           <v-card-title
               primary-title
               class="headline">
-            File Download
-          </v-card-title>
-          <v-card-text>
-            <div>
-              <v-btn @click="getReadme()">
-                Download Readme.md
-              </v-btn>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-
-      <v-flex xs4>
-        <v-card height="100%">
-          <v-card-title
-              primary-title
-              class="headline">
             Live graphs
           </v-card-title>
           <v-card-text>
@@ -127,6 +110,39 @@
         </v-card>
       </v-flex>
 
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title
+            primary-title
+            class="headline">
+            File Download
+          </v-card-title>
+          <v-card-text>
+            <div>
+              <v-btn @click="getReadme()">
+                Download Readme.md
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title
+            primary-title
+            class="headline">
+            File Upload
+          </v-card-title>
+          <v-card-text>
+            <upload-button
+              title="Upload"
+              :selectedCallback="fileSelectedFunc"/>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+
+
     </v-layout>
   </v-container>
 </template>
@@ -142,13 +158,15 @@
 <script>
 import _ from 'lodash'
 
-import rpc from '../../modules/rpc'
+import rpc from '../modules/rpc'
 import vueSlider from 'vue-slider-component'
-import config from '../../config'
-import ChartWidget from '../../modules/chart-widget'
-import CanvasWidget from '../../modules/canvas-widget'
-import Model from '../../modules/model'
-import webglstarterkit from '../../modules/webgl-widget'
+import config from '../config'
+import ChartWidget from '../modules/chart-widget'
+import CanvasWidget from '../modules/canvas-widget'
+import Model from '../modules/model'
+import webglstarterkit from '../modules/webgl-widget'
+import UploadButton from './UploadButton'
+
 const THREE = require('three')
 
 function getRandomColor () {
@@ -162,7 +180,7 @@ function getRandomColor () {
 
 export default {
   name: 'experiments',
-  components: {vueSlider},
+  components: {vueSlider, UploadButton},
   data () {
     return {
       text: '',
@@ -308,6 +326,11 @@ export default {
         slider.value = Math.random() * slider.max
       }
       this.changeGraph()
+    },
+    async fileSelectedFunc (files) {
+      console.log('fileSelectedFunc send', typeof(files), files)
+      let result = await rpc.rpcUpload('publicUploadFiles', files)
+      console.log('fileSelectedFunc result', result)
     }
   }
 }

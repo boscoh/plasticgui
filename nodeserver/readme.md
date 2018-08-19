@@ -18,10 +18,9 @@ The base user class in the database is implemented, which hooks into the the aut
 
 - `app.js` - entry point of server, loads all other modules
 - `config.js` - configuration of the IP, and database
-- `conn.js` - storage of key global variables in the Node/Sequelize ecosystem
-- `model.js` - defines the database models, and all database access functions - these only accepts and returns Javascript object literals
 - `router.js` - this defines the key http handlers. In the RPC-JSON approach, there are only 3 handlers, a generic run handler, an upload handler, and a download handler. As well, there is a bridge to uploaded files, which are publically accessible.
-- `handlers.js` - this defines all the javascript functions that are automatically accessible via the RPC-JSON api. These functions interface the database to the web-client. 
+- `models/index.js` - defines the database models, and all database access functions - these only accepts and returns Javascript object literals
+- `handlers/index.js` - this defines all the javascript functions that are automatically accessible via the RPC-JSON api. These functions interface the database to the web-client.
 
 The specific domain functions are placed in the `modules` directory:
 

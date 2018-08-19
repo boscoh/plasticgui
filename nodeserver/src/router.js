@@ -7,18 +7,17 @@ const config = require('./config')
 
 const mime = require('mime')
 const multer = require('multer')
-const upload = multer({dest: config.filesDir})
+const upload = multer({dest: config.development.filesDir})
 
 const passport = require('passport')
 const express = require('express')
 
 /**
- Main router for the Versus server. This provides the main
- interface for the RPC-JSON api architecture.
-
- As well the server provides a generic file upload/download
- that will store files directly on the server, which will be
- available for the web-client via a get call
+ * Main router for the Versus server. This provides the main
+ * interface for the RPC-JSON api architecture.*
+ * As well the server provides a generic file upload/download
+ * that will store files directly on the server, which will be
+ * available for the web-client via a get call
  */
 
 // the router is defined here, and exported for the main express app
@@ -26,7 +25,7 @@ const router = express.Router()
 module.exports = router
 
 // the remote functions availabe for the RPC-JSON api
-const remoteRunFns = require('./handlers')
+const handlers = require('./handlers')
 
 /**
  * This is the main interface to the JSON-RPC api. It is a post
@@ -88,14 +87,14 @@ router.post('/api/rpc-run', (req, res, next) => {
       },
       jsonrpc: '2.0'
     })
-  } else if (method in remoteRunFns) {
+  } else if (method in handlers) {
     if (!_.startsWith(method, 'public')) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         throw new Error(`Not logged in`)
       }
     }
 
-    const runFn = remoteRunFns[method]
+    const runFn = handlers[method]
 
     runFn(...params)
       .then(result => {
@@ -135,11 +134,11 @@ router.post('/api/rpc-upload', upload.array('uploadFiles'), (req, res) => {
 
   console.log('>> router.rpc-upload.' + method)
 
-  if (method in remoteRunFns) {
+  if (method in handlers) {
     if (!method.toLowerCase().includes('upload')) {
       throw new Error(`Remote uploadFn ${method} should start with 'upload'`)
     }
-    const uploadFn = remoteRunFns[method]
+    const uploadFn = handlers[method]
     params = _.concat([req.files], params)
     uploadFn(...params)
       .then(result => {
@@ -179,12 +178,12 @@ router.post('/api/rpc-download', (req, res) => {
 
   console.log('>> router.rpc-download.' + method, params)
 
-  if (method in remoteRunFns) {
+  if (method in handlers) {
     if (!method.toLowerCase().includes('download')) {
       throw new Error(`Remote download ${method} should start with 'download'`)
     }
 
-    const downloadFn = remoteRunFns[method]
+    const downloadFn = handlers[method]
 
     downloadFn(...params)
       .then(result => {
@@ -222,23 +221,23 @@ router.post('/api/rpc-download', (req, res) => {
   }
 })
 
-// /**
-//  * Returns a file stored on the server
-//  */
-// router.get('/file/:subDir/:basename', (req, res) => {
-//   let basename = req.params.basename
-//   let subDir = req.params.subDir
-//   console.log('>> router.file', subDir, basename)
-//
-//   let filename = path.join(config.filesDir, subDir, basename)
-//   if (!fs.existsSync(filename)) {
-//     throw `File not found ${filename}`
-//   }
-//
-//   let mimeType = mime.lookup(filename)
-//
-//   res.setHeader('Content-disposition', `attachment; filename=${basename}`)
-//   res.setHeader('Content-type', mimeType)
-//   fs.createReadStream(filename).pipe(res)
-// })
-//
+/**
+ * Returns a file stored on the server
+ */
+router.get('/file/:subDir/:basename', (req, res) => {
+  let basename = req.params.basename
+  let subDir = req.params.subDir
+  console.log('>> router.file', subDir, basename)
+
+  let filename = path.join(config.develpment.filesDir, subDir, basename)
+  if (!fs.existsSync(filename)) {
+    throw `File not found ${filename}`
+  }
+
+  let mimeType = mime.lookup(filename)
+
+  res.setHeader('Content-disposition', `attachment; filename=${basename}`)
+  res.setHeader('Content-type', mimeType)
+  fs.createReadStream(filename).pipe(res)
+})
+

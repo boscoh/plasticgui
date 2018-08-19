@@ -13,14 +13,10 @@
 
 const path = require('path')
 const express = require('express')
-
 const config = require('./config')
+const handlers = require('./handlers')
 
-// Defines express app and sqlalchemy db here to avoid circular dependencies
-const conn = require('./conn')
-const handler = require('./handlers')
-let app = conn.app
-module.exports = app
+const app = express()
 
 // Middleware Configuration
 
@@ -67,7 +63,7 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((id, done) => {
-  handler
+  handlers
     .fetchUser({
       id
     })
@@ -82,14 +78,14 @@ passport.use(new LocalStrategy({
   passwordField: 'password'
 },
 function (email, password, done) {
-  handler
+  handlers
     .fetchUser({
       email: email
     })
     .then(user => {
       console.log('>> passport.LocalStrategy has email', email, password)
       if (user) {
-        handler
+        handlers
           .checkUserWithPassword(user, password)
           .then((user) => {
             if (user === null) {
@@ -154,3 +150,5 @@ app.use((err, req, res) => {
       error: {}
     })
 })
+
+module.exports = app
