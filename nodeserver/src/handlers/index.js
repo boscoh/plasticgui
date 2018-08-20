@@ -80,25 +80,11 @@ async function publicUploadFiles (fileList) {
   return {files: targetPaths}
 }
 
-const Custom = require('../models').Custom
-
-async function publicPushTask () {
-  let customInstance = await Custom.findOne({where: {type: 'task'}})
-  if (!customInstance) {
-    customInstance = await Custom.create({attr: {n: 0}, type: 'task'})
-  }
-  let attr = customInstance.attr
-  attr.n += 1
-  customInstance.update({attr})
-  return {attr}
-}
-
 handlers.push({
   publicGetText,
   publicDownloadLogo,
   publicDownloadGetReadme,
   publicUploadFiles,
-  publicPushTask
 })
 
 module.exports = Object.assign(...handlers)

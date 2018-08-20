@@ -36,10 +36,33 @@ async function saveCustom (CustomId, values) {
   return unwrapInstance(custom)
 }
 
+/**
+ * Example of using Custom to record button pushes
+ *
+ * @returns {Promise<{attr: *}>}
+ */
+async function publicPushTask () {
+  let customInstance = await Custom.findOne(
+    {where: {type: 'task'}})
+
+  if (!customInstance) {
+    customInstance = await Custom.create(
+      {attr: {n: 0}, type: 'task'})
+  }
+
+  let attr = customInstance.attr
+
+  attr.n += 1
+  customInstance.updateAttributes({attr})
+
+  return {attr}
+}
+
 module.exports = {
   createCustom,
   findCustom,
   fetchCustom,
   deleteCustom,
-  saveCustom
+  saveCustom,
+  publicPushTask
 }

@@ -210,7 +210,7 @@ async function adminGetUsers () {
 
 async function adminDeleteUser (userId) {
   await User.destroy({where: {id: userId}})
-  return {success: true}
+  return adminGetUsers()
 }
 
 module.exports = {
