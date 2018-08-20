@@ -152,8 +152,30 @@
         </v-card>
       </v-flex>
 
+    </v-layout>
+
+    <v-layout
+      row
+      wrap>
+
+      <v-flex xs4>
+        <v-card height="100%">
+          <v-card-title
+            primary-title
+            class="headline">
+            Task
+          </v-card-title>
+          <v-btn @click="setTask()">
+            Push
+          </v-btn>
+          <v-card-text v-if="task.n">
+            Clicked {{ task.n }} times
+          </v-card-text>
+        </v-card>
+      </v-flex>
 
     </v-layout>
+
   </v-container>
 </template>
 
@@ -198,6 +220,7 @@ export default {
       pointerX: 0,
       pointerY: 0,
       uploadFiles: [],
+      task: '',
       sliders: [
         {
           key: 'alpha',
@@ -349,6 +372,11 @@ export default {
       for (let f of response.result.files) {
         this.uploadFiles.push({ name: f, url: 'http://localhost:3000' + f})
       }
+    },
+    async setTask () {
+      let response = await rpc.rpcRun('publicPushTask')
+      console.log('setTask', response)
+      this.task = response.result.attr
     }
   }
 }

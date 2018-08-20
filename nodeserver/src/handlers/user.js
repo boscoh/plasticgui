@@ -209,7 +209,7 @@ async function adminGetUsers () {
 }
 
 async function adminDeleteUser (userId) {
-  let result = await User.destroy({where: {id: userId}})
+  await User.destroy({where: {id: userId}})
   return {success: true}
 }
 

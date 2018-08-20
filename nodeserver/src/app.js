@@ -109,7 +109,7 @@ app.use(require('./router'))
 const clientDir = path.join(__dirname, '..', '..', 'client', 'dist')
 app.use(express.static(clientDir))
 
-// Load static files
+// Expose saved files
 app.use('/file', express.static('files'))
 
 // Load index file
