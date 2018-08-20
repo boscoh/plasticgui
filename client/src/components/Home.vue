@@ -123,6 +123,11 @@
                 Download Readme.md
               </v-btn>
             </div>
+            <div>
+              <v-btn @click="getLogoPng()">
+                Download Logo.png
+              </v-btn>
+            </div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -284,6 +289,12 @@ export default {
   methods: {
     async getReadme () {
       let response = await rpc.rpcDownload('publicDownloadGetReadme')
+      if (response.error) {
+        this.error = response.error.message
+      }
+    },
+    async getLogoPng () {
+      let response = await rpc.rpcDownload('publicDownloadLogo')
       if (response.error) {
         this.error = response.error.message
       }

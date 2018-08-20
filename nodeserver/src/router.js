@@ -169,7 +169,7 @@ router.post('/api/rpc-upload', upload.array('uploadFiles'), (req, res) => {
 })
 
 /**
- * Upload file handlers, sends to 'upload*' function with the
+ * Dowload file handlers, sends to 'download*' function with the
  * implicit first argument, a filelist of the uploaded files.
  */
 router.post('/api/rpc-download', (req, res) => {
@@ -187,13 +187,16 @@ router.post('/api/rpc-download', (req, res) => {
 
     downloadFn(...params)
       .then(result => {
-        console.log('result', result)
+        console.log(`>> router.post.rpc-download ${method} => ${JSON.stringify(result, null, 2)}`)
         res.set('data', JSON.stringify({
           result: result.data,
           jsonrpc: '2.0'
         }))
         res.set('filename', path.basename(result.filename))
         res.set('Access-Control-Expose-Headers', 'data, filename')
+        let mimetype = mime.lookup(result.filename);
+        res.setHeader('Content-disposition', 'attachment; filename=' + result.filename);
+        res.setHeader('Content-type', mimetype);
         res.download(result.filename)
       })
       .catch(e => {

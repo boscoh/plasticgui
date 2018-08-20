@@ -44,13 +44,16 @@ async function publicDownloadGetReadme () {
   return payload
 }
 
-/**
- * Moves fileList to a time-stamped sub-directory in config.filesDir.
- * Optional checking function can throw Exceptions for bad files.
- * @param fileList
- * @param checkFilesForError
- * @promise - list of new paths
- */
+async function publicDownloadLogo () {
+  let payload = {
+    'filename': path.resolve('../client/static/logo.png'),
+    'data': {
+      'success': true
+    }
+  }
+  console.log('>> handlers.publicDownloadLogo', payload)
+  return payload
+}
 
 async function deleteFileList (fileList) {
   for (let f of fileList) {
@@ -61,6 +64,12 @@ async function deleteFileList (fileList) {
   }
 }
 
+/**
+ * Moves fileList to a time-stamped sub-directory in config.filesDir.
+ * Optional checking function can throw Exceptions for bad files.
+ * @param fileList
+ * @promise - list of new paths
+ */
 async function storeFilesInConfigDir (fileList, checkFilesForError) {
   try {
     const timestampDir = String(new Date().getTime())
@@ -95,30 +104,37 @@ async function storeFilesInConfigDir (fileList, checkFilesForError) {
   }
 }
 
+/**
+ * Places uploaded files in the publicly accessible directory
+ * config.development.filesDir using the timestamp as the
+ * sub-directory for the files
+ *
+ * @param fileList
+ * @returns {Promise<{files: Array}>}
+ */
 async function publicUploadFiles (fileList) {
   const timestampDir = String(new Date().getTime())
   const filesDir = config.development.filesDir
-  console.log('publicUploadFiles', filesDir)
+
   const fullDir = path.join(filesDir, timestampDir)
   fs.ensureDirSync(fullDir)
-  let targetPaths = [] //
+
+  let targetPaths = []
   for (let file of fileList) {
-    console.log('publicUploadFiles', file)
     let basename = path.basename(file.originalname)
     let targetPath = path.join(timestampDir, basename)
     let fullTargetPath = path.join(filesDir, targetPath)
-    console.log('publicUploadFiles', targetPath, fullTargetPath)
     fs.renameSync(file.path, fullTargetPath)
     targetPaths.push('/file/' + targetPath)
   }
+
   console.log('>> handlers.publicUploadFiles', targetPaths)
-  return {
-    files: targetPaths
-  }
+  return {files: targetPaths}
 }
 
 handlers.push({
   publicGetText,
+  publicDownloadLogo,
   publicDownloadGetReadme,
   publicUploadFiles,
 })

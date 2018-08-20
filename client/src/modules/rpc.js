@@ -1,6 +1,5 @@
 import axios from 'axios'
 import config from '../config'
-import saveAs from 'file-saver'
 
 /**
  * @fileOverview rpc module provides a clean rpc interface for JSON-based
@@ -70,13 +69,18 @@ export default {
     console.log('> rpc.rpcDownload', ...params)
 
     try {
-      let response = await axios.post(`${config.apiUrl}/api/rpc-download`, payload)
+      let response = await axios.post(
+        `${config.apiUrl}/api/rpc-download`,
+        payload,
+        {responseType: 'arraybuffer'})
       let filename = response.headers.filename
       let data = JSON.parse(response.headers.data)
-      console.log('> rpc.rpcDownload response', data)
       if (!data.error) {
         let blob = new Blob([response.data])
-        saveAs.saveAs(blob, (filename))
+        let link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob)
+        link.download = filename
+        link.click()
       }
       return data
     } catch (e) {
