@@ -1,5 +1,5 @@
 <template>
-  <div class="btn btn-primary jbtn-file">
+  <div class="v-btn v-btn-primary jbtn-file">
     {{ title }}
     <input
         type="file"

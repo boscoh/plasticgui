@@ -187,7 +187,6 @@ router.post('/api/rpc-download', (req, res) => {
 
     downloadFn(...params)
       .then(result => {
-        console.log(`>> router.post.rpc-download ${method} => ${JSON.stringify(result, null, 2)}`)
         res.set('data', JSON.stringify({
           result: result.data,
           jsonrpc: '2.0'

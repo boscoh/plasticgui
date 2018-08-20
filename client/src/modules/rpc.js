@@ -66,7 +66,7 @@ export default {
       jsonrpc: '2.0'
     }
 
-    console.log('> rpc.rpcDownload', ...params)
+    console.log('> rpc.rpcDownload', method, ...params)
 
     try {
       let response = await axios.post(
@@ -75,6 +75,7 @@ export default {
         {responseType: 'arraybuffer'})
       let filename = response.headers.filename
       let data = JSON.parse(response.headers.data)
+
       if (!data.error) {
         let blob = new Blob([response.data])
         let link = document.createElement('a')
