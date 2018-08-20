@@ -2,6 +2,7 @@
   <div class="btn btn-primary jbtn-file">
     {{ title }}
     <input
+      multiple
       type="file"
       v-on:change="fileSelected"/>
   </div>
