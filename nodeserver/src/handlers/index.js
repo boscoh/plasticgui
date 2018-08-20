@@ -35,25 +35,21 @@ async function publicGetText () {
 }
 
 async function publicDownloadGetReadme () {
-  let payload = {
+  return {
     'filename': path.resolve(dirname, '../../../readme.md'),
     'data': {
       'success': true
     }
   }
-  console.log('>> handlers.publicGetReadme', payload)
-  return payload
 }
 
 async function publicDownloadLogo () {
-  let payload = {
+  return {
     'filename': path.resolve(dirname, '../../../client/static/logo.png'),
     'data': {
       'success': true
     }
   }
-  console.log('>> handlers.publicDownloadLogo', payload)
-  return payload
 }
 
 /**
