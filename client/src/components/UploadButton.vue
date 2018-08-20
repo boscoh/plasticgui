@@ -1,9 +1,9 @@
 <template>
-  <div class="v-btn v-btn-primary jbtn-file">
+  <div class="btn btn-primary jbtn-file">
     {{ title }}
     <input
-        type="file"
-        v-on:change="fileSelected"/>
+      type="file"
+      v-on:change="fileSelected"/>
   </div>
 </template>
 
@@ -15,12 +15,12 @@ export default {
     title: String
   },
   methods: {
-    fileSelected(e) {
+    fileSelected (e) {
       if (this.selectedCallback) {
         if (e.target.files[0]) {
-          this.selectedCallback(e.target.files);
+          this.selectedCallback(e.target.files)
         } else {
-          this.selectedCallback(null);
+          this.selectedCallback(null)
         }
       }
     }

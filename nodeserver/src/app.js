@@ -112,6 +112,7 @@ app.use(express.static(clientDir))
 // Load static files
 app.use('/file', express.static('files'))
 
+// Load index file
 app.get('/', (req, res) => {
   res.sendFile(path.join(clientDir, 'index.html'))
 })

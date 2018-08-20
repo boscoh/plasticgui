@@ -223,23 +223,3 @@ router.post('/api/rpc-download', (req, res) => {
   }
 })
 
-/**
- * Returns a file stored on the server
- */
-router.get('/file/:subDir/:basename', (req, res) => {
-  let basename = req.params.basename
-  let subDir = req.params.subDir
-  console.log('>> router.file', subDir, basename)
-
-  let filename = path.join(config.development.filesDir, subDir, basename)
-  if (!fs.existsSync(filename)) {
-    throw `File not found ${filename}`
-  }
-
-  let mimeType = mime.lookup(filename)
-
-  res.setHeader('Content-disposition', `attachment; filename=${basename}`)
-  res.setHeader('Content-type', mimeType)
-  fs.createReadStream(filename).pipe(res)
-})
-
