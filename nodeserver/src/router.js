@@ -229,7 +229,7 @@ router.get('/file/:subDir/:basename', (req, res) => {
   let subDir = req.params.subDir
   console.log('>> router.file', subDir, basename)
 
-  let filename = path.join(config.develpment.filesDir, subDir, basename)
+  let filename = path.join(config.development.filesDir, subDir, basename)
   if (!fs.existsSync(filename)) {
     throw `File not found ${filename}`
   }

@@ -138,6 +138,11 @@
             <upload-button
               title="Upload"
               :selectedCallback="fileSelectedFunc"/>
+            <v-list>
+              <v-list-tile v-for="file, i in uploadFiles" :key="i">
+                <a :href="file.url">{{file.name}}</a>
+              </v-list-tile>
+            </v-list>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -328,9 +333,11 @@ export default {
       this.changeGraph()
     },
     async fileSelectedFunc (files) {
-      console.log('fileSelectedFunc send', typeof(files), files)
-      let result = await rpc.rpcUpload('publicUploadFiles', files)
-      console.log('fileSelectedFunc result', result)
+      let response = await rpc.rpcUpload('publicUploadFiles', files)
+      this.uploadFiles.length = 0
+      for (let f of response.result.files) {
+        this.uploadFiles.push({ name: f, url: 'http://localhost:3000' + f})
+      }
     }
   }
 }
