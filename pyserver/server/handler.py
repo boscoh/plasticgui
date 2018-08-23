@@ -144,3 +144,14 @@ def publicUploadFiles(files):
         os.rename(file, new_filename)
     print('> handler.publicUploadFiles', new_filenames)
     return {'files': urls}
+
+
+def publicPushTask():
+    records = dbmodel.load_obj_records(obj_type="task")
+    if len(records) == 0:
+        obj_id = create_obj_id(attr={"n": 1}, obj_type="task")
+        records = dbmodel.load_obj_records(id=obj_id)
+    record = records[0]
+    record.attr["n"] += 1
+    dbmodel.save_object(record.id, record.obj_type, "", record.attr)
+    return {"attr": record.attr}
