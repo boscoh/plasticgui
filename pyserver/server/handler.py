@@ -40,7 +40,7 @@ def publicRegisterUser(user_attr):
         raise Exception("User already exists")
     except:
 
-        print("> publicRegisterUser user_attr", user_attr)
+        print("> handler.publicRegisterUser user_attr", user_attr)
 
         created_user_attr = dbmodel.create_user(user_attr)
         return {
@@ -62,7 +62,7 @@ def loginUpdateUser(user_attr):
 
 def publicLoginUser(user_attr):
     if not dbmodel.is_current_user_anonymous():
-        print("> publicLoginUser already logged-in")
+        print("> handler.publicLoginUser already logged-in")
         return {
             'success': True,
             'user': dbmodel.parse_user(current_user)
@@ -75,7 +75,7 @@ def publicLoginUser(user_attr):
     if user_attr['email']:
         kwargs['email'] = user_attr['email']
 
-    print("> publicLoginUser loading", kwargs, user_attr['password'])
+    print("> handler.publicLoginUser loading", kwargs, user_attr['password'])
     try:
         user = dbmodel.load_user(**kwargs)
     except:
@@ -93,7 +93,7 @@ def publicLoginUser(user_attr):
 
 def adminDeleteUser(user_id):
     username = dbmodel.delete_user(user_id)['username']
-    print("> admin_delete_user ", username)
+    print("> handler.admin_delete_user ", username)
     return adminGetUsers()
 
 
@@ -105,6 +105,9 @@ def publicLogoutUser():
 
 # model handlers
 
+this_dir = os.path.dirname(__file__)
+
+
 def publicGetText():
     return {
         "text": "Example text from server",
@@ -113,13 +116,17 @@ def publicGetText():
 
 
 def publicDownloadGetReadme():
-    import os
-    payload = {
-        "filename": os.path.abspath("readme.md"),
+    return {
+        "filename": os.path.join(this_dir, "../../readme.md"),
         "data": {"success": True}
     }
-    print("> publicGetReadme", payload)
-    return payload
+
+
+def publicDownloadLogo():
+    return {
+        "filename": os.path.join(this_dir, "../../client/static/logo.png"),
+        "data": {"success": True}
+    }
 
 
 def publicUploadFiles(files):
@@ -135,5 +142,5 @@ def publicUploadFiles(files):
         urls.append(os.path.join('/file', timestamp, basename))
         new_filenames.append(new_filename)
         os.rename(file, new_filename)
-    print('> handlers.publicUploadFiles', new_filenames)
+    print('> handler.publicUploadFiles', new_filenames)
     return {'files': urls}

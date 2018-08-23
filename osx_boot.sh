@@ -10,7 +10,7 @@ osascript 2>/dev/null <<EOF
     tell application "Terminal"
         activate
         do script with command "cd \"$DIR/client\"; $*" in window 0
-        do script with command "./hot-reload.sh" in window 0
+        do script with command "npm run dev" in window 0
     end
     tell application "System Events"
         tell process "Terminal" to keystroke "t" using command down

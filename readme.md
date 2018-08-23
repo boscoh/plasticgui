@@ -1,6 +1,11 @@
+
+
+
 # plasticgui
 
+
 Plasticgui is a template for data-visualization GUI with optional web-server. You can get started quickly with raster-graphics, 3d-graphics, or chart graphics. And an optional web-server is included that provides a ready-to-go user system and file upload/download.
+
 
 ## Quick start
 
@@ -78,9 +83,11 @@ To help things along, I've included two wrappers, `chart-widget` and `canvas-wid
 
 ## Optional Webserver
 
-Of course, you are very likely to want to plug your data visualization to a server, either to serve complex data, talk to files, or to deploy on a external website.
+Of course, you are very likely to want to plug your data visualization to a server, either to serve complex data, talk to files, run external analysis/modelling programs, or deploy to an external website.
 
 #### Talking between client and server
+
+Frontend evolves with backend when there is talk so they need to be written together.
 
 There are quite a few different ways of communicating to the server, the most popular seems to be Rest, and GraphQL. They each have their advantages. Here I've revived a much older approach, the Remote Procedural Call approach, following the RPC-JSON 2.0 specification.
 

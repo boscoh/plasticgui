@@ -8,13 +8,13 @@ const config = require('../config')[env]
 
 const basename = path.basename(__filename)
 
-const db = {}
+const models = {}
 
-db.config = config.db
-db.Sequelize = Sequelize
-db.sequelize = new Sequelize(db.config.database, db.config.username, db.config.password, db.config)
+models.config = config.db
+models.Sequelize = Sequelize
+models.sequelize = new Sequelize(models.config.database, models.config.username, models.config.password, models.config)
 
-db.unwrapInstance = function (instance) {
+models.unwrapInstance = function (instance) {
   if (instance === null) {
     return null
   } else {
@@ -24,7 +24,7 @@ db.unwrapInstance = function (instance) {
   }
 }
 
-db.sequelize.define()
+models.sequelize.define()
 
 fs
   .readdirSync(__dirname)
@@ -32,21 +32,21 @@ fs
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
   })
   .forEach(file => {
-    const model = db.sequelize['import'](path.join(__dirname, file))
-    db[model.name] = model
+    const model = models.sequelize['import'](path.join(__dirname, file))
+    models[model.name] = model
   })
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db)
+Object.keys(models).forEach(modelName => {
+  if (models[modelName].associate) {
+    models[modelName].associate(models)
   }
 })
 
 async function init () {
-  await db.sequelize.sync()
+  await models.sequelize.sync()
   console.log('> Models.init done')
 }
 
 init()
 
-module.exports = db
+module.exports = models
