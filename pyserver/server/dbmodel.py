@@ -267,7 +267,6 @@ def make_obj_query(user_id=None, obj_type="project", db_session=None, **kwargs):
         kwargs['user_id'] = user_id
     if obj_type is not None:
         kwargs['obj_type'] = obj_type
-    print("> dbmodel.make_obj_query", kwargs)
     return db_session.query(ObjectDb).filter_by(**kwargs)
 
 
@@ -300,7 +299,7 @@ def save_object(id, obj_type, obj_str, obj_attr, db_session=None):
     record.blob = obj_str
     obj_attr = copy.deepcopy(obj_attr)
     obj_attr['userId'] = str(record.user_id)
-    obj_attr['modifiedTime'] = repr(arrow.now.format())
+    obj_attr['modifiedTime'] = repr(arrow.now().format())
     record.attr = obj_attr
     db_session.add(record)
     db_session.commit()
