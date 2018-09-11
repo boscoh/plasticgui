@@ -1,8 +1,7 @@
 import _ from 'lodash'
 
 export default {
-
-  jstr (o) {
+  jstr(o) {
     return JSON.stringify(o, null, 2)
   },
 
@@ -13,7 +12,7 @@ export default {
    * @param {Object} item - target item
    * @param {String} key - field in item for identification
    */
-  removeItem (aList, item, key) {
+  removeItem(aList, item, key) {
     for (let i = aList.length - 1; i >= 0; i -= 1) {
       if (aList[i][key] === item[key]) {
         aList.splice(i, 1)
@@ -26,7 +25,7 @@ export default {
    * @param {String} filename
    * @param {String} s - contents of file
    */
-  downloadFile (filename, s) {
+  downloadFile(filename, s) {
     let data = 'text/json;charset=utf-8,' + encodeURIComponent(s)
 
     let a = document.createElement('a')
@@ -39,9 +38,9 @@ export default {
     document.body.removeChild(a)
   },
 
-  delay (time) {
-    return new Promise(function (resolve) {
-      setTimeout(function () {
+  delay(time) {
+    return new Promise(function(resolve) {
+      setTimeout(function() {
         resolve(time)
       }, time)
     })
@@ -51,7 +50,7 @@ export default {
    * Creates an n-length array of v values
    * @returns {Array}
    */
-  makeArray (n, v) {
+  makeArray(n, v) {
     let l = []
     for (let i = 0; i < n; i += 1) {
       l.push(v)
@@ -59,7 +58,7 @@ export default {
     return l
   },
 
-  isStringInStringList (str, testStrList) {
+  isStringInStringList(str, testStrList) {
     for (let testStr of testStrList) {
       if (_.includes(str, testStr)) {
         return true
@@ -71,7 +70,7 @@ export default {
   /**
    * Copies to the clipboard https://stackoverflow.com/a/30810322
    */
-  copyTextToClipboard (text) {
+  copyTextToClipboard(text) {
     let textArea = document.createElement('textarea')
 
     //
@@ -126,5 +125,4 @@ export default {
 
     document.body.removeChild(textArea)
   }
-
 }

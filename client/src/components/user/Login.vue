@@ -10,34 +10,33 @@
 
       <v-card-text>
         <form
-            novalidate
-            v-on:submit.prevent="submit">
+          novalidate
+          @submit.prevent="submit">
           <v-container
-              fluid
-              grid-list-xl>
+            fluid
+            grid-list-xl>
 
             <v-layout
-                row
-                wrap>
+              row
+              wrap>
               <v-flex class="xs12">
                 <v-text-field
-                    v-model="user.email"
-                    label="E-mail address"
-                    :error-messages="errors.collect('email')"
-                    v-validate="'email'"
-                    data-vv-name="email"></v-text-field>
+                  v-validate="'email'"
+                  v-model="user.email"
+                  :error-messages="errors.collect('email')"
+                  label="E-mail address"
+                  data-vv-name="email"/>
                 <v-text-field
-                    hint="At least 6 characters"
-                    v-model="rawPassword"
-                    :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
-                    :append-icon-cb="() => (passwordHidden = !passwordHidden)"
-                    :type="passwordHidden ? 'password' : 'text'"
-                    counter
-                    label="Password"
-                    :error-messages="errors.collect('rawPassword')"
-                    v-validate="'required|min:6'"
-                    data-vv-name="rawPassword">
-                </v-text-field>
+                  v-model="rawPassword"
+                  :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
+                  v-validate="'required|min:6'"
+                  :append-icon-cb="() => (passwordHidden = !passwordHidden)"
+                  :type="passwordHidden ? 'password' : 'text'"
+                  :error-messages="errors.collect('rawPassword')"
+                  hint="At least 6 characters"
+                  counter
+                  label="Password"
+                  data-vv-name="rawPassword"/>
                 <p>
                   <router-link to="/forgot-password">Forgot</router-link>
                   your password? </p>
@@ -45,13 +44,14 @@
             </v-layout>
 
             <v-btn
-                type="submit"
-                class="v-accent">
+              type="submit"
+              class="v-accent">
               Login
             </v-btn>
 
-            <div v-if="error"
-                 style="color: red">
+            <div 
+              v-if="error"
+              style="color: red">
               {{ error }}
             </div>
 
@@ -76,7 +76,7 @@ import config from '../../config'
 
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       title: config.title,
       passwordHidden: true,
@@ -86,16 +86,16 @@ export default {
   },
   computed: {
     user: {
-      get () {
+      get() {
         return this.$store.state.user
       },
-      set (u) {
+      set(u) {
         this.$store.commit('setUser', u)
       }
     }
   },
   methods: {
-    async submit () {
+    async submit() {
       let payload = {
         email: this.user.email,
         rawPassword: this.rawPassword

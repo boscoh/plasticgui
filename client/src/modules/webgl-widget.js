@@ -10,7 +10,7 @@ const THREE = require('three')
  */
 
 class Widget {
-  constructor (selector) {
+  constructor(selector) {
     this.selector = selector
     this.div = $(this.selector)
     this.divDom = this.div[0]
@@ -28,7 +28,7 @@ class Widget {
     this.isChanged = false
   }
 
-  bindCallbacks (dom) {
+  bindCallbacks(dom) {
     let bind = (eventType, callback) => {
       dom.addEventListener(eventType, callback)
     }
@@ -47,19 +47,19 @@ class Widget {
     bind('gestureend', e => this.gestureend(e))
   }
 
-  resize () {
+  resize() {
     // override
   }
 
-  width () {
+  width() {
     return this.div.width()
   }
 
-  height () {
+  height() {
     return this.div.height()
   }
 
-  calcPointerXY (event) {
+  calcPointerXY(event) {
     // calculation of div position by traversing DOM tree
     let top = 0
     let left = 0
@@ -81,7 +81,7 @@ class Widget {
       dom = dom.parentNode
     } while (dom)
 
-    if (!_.isUndefined(event.touches) && (event.touches.length > 0)) {
+    if (!_.isUndefined(event.touches) && event.touches.length > 0) {
       this.eventX = event.touches[0].clientX
       this.eventY = event.touches[0].clientY
     } else {
@@ -93,21 +93,21 @@ class Widget {
     this.pointerY = this.eventY - top
   }
 
-  savePointerXY () {
+  savePointerXY() {
     this.savePointerX = this.pointerX
     this.savePointerY = this.pointerY
   }
 
-  mousedown (event) {
+  mousedown(event) {
     this.calcPointerXY(event)
 
     event.preventDefault()
 
     this.mouseclick(this.pointerX, this.pointerY)
 
-    let now = (new Date()).getTime()
+    let now = new Date().getTime()
 
-    let isDoubleClick = (now - this.timeLastPressed) < 500
+    let isDoubleClick = now - this.timeLastPressed < 500
     if (isDoubleClick) {
       this.mousedoubleclick(this.pointerX, this.pointerY)
     }
@@ -118,7 +118,7 @@ class Widget {
     this.mousePressed = true
   }
 
-  mousemove (event) {
+  mousemove(event) {
     this.calcPointerXY(event)
 
     event.preventDefault()
@@ -128,25 +128,31 @@ class Widget {
       return
     }
 
-    let shiftDown = (event.shiftKey === 1)
+    let shiftDown = event.shiftKey === 1
 
-    let rightMouse = (event.button === 2) || (event.which === 3)
+    let rightMouse = event.button === 2 || event.which === 3
 
     if (this.mousePressed) {
       if (rightMouse || shiftDown) {
         this.rightmousedrag(
-          this.savePointerX, this.savePointerY,
-          this.pointerX, this.pointerY)
+          this.savePointerX,
+          this.savePointerY,
+          this.pointerX,
+          this.pointerY
+        )
       } else {
         this.leftmousedrag(
-          this.savePointerX, this.savePointerY,
-          this.pointerX, this.pointerY)
+          this.savePointerX,
+          this.savePointerY,
+          this.pointerX,
+          this.pointerY
+        )
       }
     }
     this.savePointerXY()
   }
 
-  mouseup (event) {
+  mouseup(event) {
     this.calcPointerXY(event)
 
     event.preventDefault()
@@ -159,30 +165,31 @@ class Widget {
     this.mousePressed = false
   }
 
-  gesturestart (event) {
+  gesturestart(event) {
     event.preventDefault()
     this.isGesture = true
     this.gestureRot = 0
     this.gestureScale = event.scale * event.scale
   }
 
-  gesturechange (event) {
+  gesturechange(event) {
     event.preventDefault()
     this.gesturedrag(
       event.rotation - this.gestureRot,
-      this.gestureScale / event.scale)
+      this.gestureScale / event.scale
+    )
 
     this.gestureRot = event.rotation
     this.gestureScale = event.scale
   }
 
-  gestureend (event) {
+  gestureend(event) {
     event.preventDefault()
     this.isGesture = false
     this.mousePressed = false
   }
 
-  mousewheel (event) {
+  mousewheel(event) {
     event.preventDefault()
 
     let wheel
@@ -198,21 +205,21 @@ class Widget {
 
   // override these functions
 
-  mousescroll (wheel) {}
+  mousescroll(wheel) {}
 
-  mouseclick (x, y) {}
+  mouseclick(x, y) {}
 
-  mousedoubleclick (x, y) {}
+  mousedoubleclick(x, y) {}
 
-  leftmousedrag (x0, y0, x1, y1) {}
+  leftmousedrag(x0, y0, x1, y1) {}
 
-  rightmousedrag (x0, y0, x1, y1) {}
+  rightmousedrag(x0, y0, x1, y1) {}
 
-  gesturedrag (rot, scale) {}
+  gesturedrag(rot, scale) {}
 
-  draw () {}
+  draw() {}
 
-  animate (elapsedTime) {}
+  animate(elapsedTime) {}
 }
 
 /**
@@ -223,8 +230,8 @@ class Widget {
  * - .draw()
  */
 
-function registerWidgetForAnimation (widget) {
-  function loop () {
+function registerWidgetForAnimation(widget) {
+  function loop() {
     window.requestAnimationFrame(loop)
 
     if (window.animationWidgets.length === 0) {
@@ -265,7 +272,7 @@ function registerWidgetForAnimation (widget) {
  */
 
 class WebglWidget extends Widget {
-  constructor (selector, backgroundColor = 0x000000) {
+  constructor(selector, backgroundColor = 0x000000) {
     super(selector)
 
     // determines how far away the camera is from the scene
@@ -282,8 +289,10 @@ class WebglWidget extends Widget {
     this.scene = new THREE.Scene()
     this.scene.fog = new THREE.Fog(
       this.backgroundColor,
-      this.zoom + 1, 100,
-      this.zoom + this.zBack)
+      this.zoom + 1,
+      100,
+      this.zoom + this.zBack
+    )
 
     // stores light objects to rotate with camera motion
     this.lights = []
@@ -297,7 +306,8 @@ class WebglWidget extends Widget {
       45,
       this.width() / this.height(),
       this.zFront + this.zoom,
-      this.zBack + this.zoom)
+      this.zBack + this.zoom
+    )
 
     this.cameraFocus = this.scene.position.clone()
 
@@ -324,29 +334,29 @@ class WebglWidget extends Widget {
     registerWidgetForAnimation(this)
   }
 
-  resize () {
+  resize() {
     this.camera.aspect = this.width() / this.height()
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(this.width(), this.height())
     this.isChanged = true
   }
 
-  setLights () {
-    let directionalLight = new THREE.DirectionalLight(0xFFFFFF)
+  setLights() {
+    let directionalLight = new THREE.DirectionalLight(0xffffff)
     directionalLight.position.set(0.2, 0.2, 100).normalize()
     directionalLight.intensity = 1.2
     this.lights.push(directionalLight)
     this.lights.push(new THREE.AmbientLight(0x202020))
   }
 
-  draw () {
+  draw() {
     this.renderer.render(this.scene, this.camera)
   }
 
-  animate (elapsedTime) {
+  animate(elapsedTime) {
     let msPerStep = 25
 
-    let nStep = (elapsedTime) / msPerStep
+    let nStep = elapsedTime / msPerStep
     if (nStep < 1) {
       nStep = 1
     }
@@ -356,22 +366,20 @@ class WebglWidget extends Widget {
     }
   }
 
-  update () {}
+  update() {}
 
-  getSceneRadius () {
+  getSceneRadius() {
     let sceneRadius = 0.0
 
-    this.scene.traverse((object) => {
+    this.scene.traverse(object => {
       if (object instanceof THREE.Mesh) {
         let objectCenter = object.position.clone()
         objectCenter.applyMatrix4(object.matrixWorld)
 
-        let dCenter = this.scene.position.distanceTo(
-          objectCenter)
+        let dCenter = this.scene.position.distanceTo(objectCenter)
 
         object.geometry.computeBoundingSphere()
-        let objectRadius =
-          dCenter + object.geometry.boundingSphere.radius
+        let objectRadius = dCenter + object.geometry.boundingSphere.radius
 
         sceneRadius = Math.max(objectRadius, sceneRadius)
       }
@@ -380,35 +388,34 @@ class WebglWidget extends Widget {
     return sceneRadius
   }
 
-  moveCameraToShowAll () {
+  moveCameraToShowAll() {
     this.sceneRadius = this.getSceneRadius()
     this.zFront = -2.4 * this.sceneRadius
     this.zBack = 2.5 * this.sceneRadius
     this.setCameraZoomFromScene(2.5 * this.sceneRadius)
   }
 
-  rotateCameraAroundScene (xRotAngle, yRotAngle, zRotAngle, isRotateLights = true) {
+  rotateCameraAroundScene(
+    xRotAngle,
+    yRotAngle,
+    zRotAngle,
+    isRotateLights = true
+  ) {
     let y = this.camera.up
 
-    let cameraDiff = this.camera.position.clone()
-      .sub(this.scene.position)
+    let cameraDiff = this.camera.position.clone().sub(this.scene.position)
 
     this.zoom = cameraDiff.length()
 
     let z = cameraDiff.clone().normalize()
 
-    let x = new THREE.Vector3()
-      .crossVectors(y, z)
-      .normalize()
+    let x = new THREE.Vector3().crossVectors(y, z).normalize()
 
-    let rotZ = new THREE.Quaternion()
-      .setFromAxisAngle(z, zRotAngle)
+    let rotZ = new THREE.Quaternion().setFromAxisAngle(z, zRotAngle)
 
-    let rotY = new THREE.Quaternion()
-      .setFromAxisAngle(y, -yRotAngle)
+    let rotY = new THREE.Quaternion().setFromAxisAngle(y, -yRotAngle)
 
-    let rotX = new THREE.Quaternion()
-      .setFromAxisAngle(x, -xRotAngle)
+    let rotX = new THREE.Quaternion().setFromAxisAngle(x, -xRotAngle)
 
     let rotation = new THREE.Quaternion()
       .multiply(rotZ)
@@ -435,7 +442,7 @@ class WebglWidget extends Widget {
     this.isChanged = true
   }
 
-  setCameraZoomFromScene (newZoom) {
+  setCameraZoomFromScene(newZoom) {
     this.camera.position
       .sub(this.cameraFocus)
       .normalize()
@@ -460,20 +467,20 @@ class WebglWidget extends Widget {
     this.isChanged = true
   }
 
-  getDepth (pos) {
+  getDepth(pos) {
     let origin = this.scene.position
 
-    let cameraDir = origin.clone()
+    let cameraDir = origin
+      .clone()
       .sub(this.camera.position)
       .normalize()
 
-    let posRelativeToOrigin = pos.clone()
-      .sub(origin)
+    let posRelativeToOrigin = pos.clone().sub(origin)
 
     return posRelativeToOrigin.dot(cameraDir)
   }
 
-  calcScreenXYOfPos (obj) {
+  calcScreenXYOfPos(obj) {
     let widthHalf = 0.5 * this.width()
     let heightHalf = 0.5 * this.height()
 
@@ -481,29 +488,32 @@ class WebglWidget extends Widget {
     vector.setFromMatrixPosition(obj.matrixWorld)
     vector.project(this.camera)
 
-    return new THREE.Vector2()
-      .set(
-        (vector.x * widthHalf) + widthHalf, -(vector.y * heightHalf) + heightHalf
-      )
+    return new THREE.Vector2().set(
+      vector.x * widthHalf + widthHalf,
+      -(vector.y * heightHalf) + heightHalf
+    )
   }
 
-  getClickedMeshes () {
-    let screenXY = new THREE.Vector2()
-      .set(-1 + this.pointerX / this.width() * 2, +1 - this.pointerY / this.height() * 2)
+  getClickedMeshes() {
+    let screenXY = new THREE.Vector2().set(
+      -1 + (this.pointerX / this.width()) * 2,
+      +1 - (this.pointerY / this.height()) * 2
+    )
 
     this.raycaster.setFromCamera(screenXY, this.camera)
 
     return this.raycaster.intersectObjects(this.clickableMeshes)
   }
 
-  leftmousedrag (x0, y0, x1, y1) {
+  leftmousedrag(x0, y0, x1, y1) {
     this.rotateCameraAroundScene(
       this.degToRad(y1 - y0),
       this.degToRad(x1 - x0),
-      0)
+      0
+    )
   }
 
-  rightmousedrag (x0, y0, x1, y1) {
+  rightmousedrag(x0, y0, x1, y1) {
     let calcRadial = (x, y) => {
       x -= this.width() / 2
       y -= this.height() / 2
@@ -532,28 +542,28 @@ class WebglWidget extends Widget {
     this.setCameraZoomFromScene(this.zoom * ratio)
   }
 
-  degToRad (deg) {
-    return deg * Math.PI / 180.0
+  degToRad(deg) {
+    return (deg * Math.PI) / 180.0
   }
 
-  mousescroll (wheel) {
+  mousescroll(wheel) {
     let ratio = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1)
     this.setCameraZoomFromScene(this.zoom * ratio)
   }
 
-  gesturedrag (rotDiff, ratio) {
+  gesturedrag(rotDiff, ratio) {
     this.rotateCameraAroundScene(0, 0, this.degToRad(rotDiff * 2))
     this.setCameraZoomFromScene(this.zoom * ratio * ratio)
   }
 
-  gesturestart (event) {
+  gesturestart(event) {
     event.preventDefault()
     this.isGesture = true
     this.gestureRot = 0
     this.gestureScale = event.scale * event.scale
   }
 
-  gestureend (event) {
+  gestureend(event) {
     event.preventDefault()
     this.isGesture = false
     this.mousePressed = false
@@ -565,78 +575,85 @@ class WebglWidget extends Widget {
  */
 
 class PopupText {
-  constructor (selector, backgroundColor = 'white', textColor = 'black', opacity = 0.7) {
-    this.textDiv = $('<div>')
-      .css({
-        'position': 'absolute',
-        'top': 0,
-        'left': 0,
-        'z-index': 100,
-        'background': backgroundColor,
-        'color': textColor,
-        'padding': '5',
-        'opacity': opacity,
-        'display': 'none',
-        'pointer-events': 'none'
-      })
+  constructor(
+    selector,
+    backgroundColor = 'white',
+    textColor = 'black',
+    opacity = 0.7
+  ) {
+    this.textDiv = $('<div>').css({
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      'z-index': 100,
+      background: backgroundColor,
+      color: textColor,
+      padding: '5',
+      opacity: opacity,
+      display: 'none',
+      'pointer-events': 'none'
+    })
 
-    this.arrowDiv = $('<div>')
-      .css({
-        'position': 'absolute',
-        'top': 0,
-        'left': 0,
-        'z-index': 100,
-        'width': 0,
-        'height': 0,
-        'border-left': '5px solid transparent',
-        'border-right': '5px solid transparent',
-        'border-top': '50px solid ' + backgroundColor,
-        'opacity': opacity,
-        'display': 'none',
-        'pointer-events': 'none'
-      })
+    this.arrowDiv = $('<div>').css({
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      'z-index': 100,
+      width: 0,
+      height: 0,
+      'border-left': '5px solid transparent',
+      'border-right': '5px solid transparent',
+      'border-top': '50px solid ' + backgroundColor,
+      opacity: opacity,
+      display: 'none',
+      'pointer-events': 'none'
+    })
 
     this.mainDiv = $(selector)
     this.mainDiv.append(this.textDiv)
     this.mainDiv.append(this.arrowDiv)
   }
 
-  move (x, y) {
+  move(x, y) {
     let mainDivPos = this.mainDiv.position()
     let width = this.textDiv.innerWidth()
     let height = this.textDiv.innerHeight()
 
-    if ((x < 0) || (x > this.mainDiv.width()) || (y < 0) ||
-      (y > this.mainDiv.height())) {
+    if (
+      x < 0 ||
+      x > this.mainDiv.width() ||
+      y < 0 ||
+      y > this.mainDiv.height()
+    ) {
       this.hide()
       return
     }
 
     this.textDiv.css({
-      'top': y - height - 50 + mainDivPos.top,
-      'left': x - width / 2 + mainDivPos.left,
-      'display': 'block',
+      top: y - height - 50 + mainDivPos.top,
+      left: x - width / 2 + mainDivPos.left,
+      display: 'block',
       'font-family': 'sans-serif',
-      'cursor': 'pointer'
+      cursor: 'pointer'
     })
 
     this.arrowDiv.css({
-      'top': y - 50 + mainDivPos.top,
-      'left': x - 5 + mainDivPos.left,
-      'display': 'block'
+      top: y - 50 + mainDivPos.top,
+      left: x - 5 + mainDivPos.left,
+      display: 'block'
     })
   }
 
-  hide () {
+  hide() {
     this.textDiv.css('display', 'none')
     this.arrowDiv.css('display', 'none')
   }
 
-  html (text) {
+  html(text) {
     this.textDiv.html(text)
   }
 
-  remove () {
+  remove() {
     this.textDiv.remove()
     this.arrowDiv.remove()
   }

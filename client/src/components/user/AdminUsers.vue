@@ -9,15 +9,15 @@
       <v-card-text>
         <v-list>
           <v-list-tile
-              v-for="user of users"
-              :key="user.id">
+            v-for="user of users"
+            :key="user.id">
 
-            {{ user.name }} - {{user.email}}
+            {{ user.name }} - {{ user.email }}
 
             <v-btn
-                flat
-                icon
-                @click="deleteUser(user.id)">
+              flat
+              icon
+              @click="deleteUser(user.id)">
               <v-icon>
                 delete
               </v-icon>
@@ -37,13 +37,13 @@ import config from '../../config'
 
 export default {
   name: 'AdminUser',
-  data () {
+  data() {
     return {
       title: config.title,
       users: []
     }
   },
-  async mounted () {
+  async mounted() {
     let response = await rpc.rpcRun('adminGetUsers')
     console.log('AdminUsers.mounted', response)
     if (response.result) {
@@ -52,7 +52,7 @@ export default {
     }
   },
   methods: {
-    async deleteUser (userId) {
+    async deleteUser(userId) {
       let response = await rpc.rpcRun('adminDeleteUser', userId)
       if (response.result) {
         console.log('> AdminUsers.deleteUser remaining', response.result.users)

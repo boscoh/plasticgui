@@ -8,61 +8,61 @@
 
       <v-card-text>
         <form
-            novalidate
-            class="login-screen"
-            v-on:submit.prevent="submit">
+          novalidate
+          class="login-screen"
+          @submit.prevent="submit">
           <v-container
-              fluid
-              grid-list-xl>
+            fluid
+            grid-list-xl>
 
             <v-layout
-                row
-                wrap>
+              row
+              wrap>
               <v-flex class="xs12">
                 <v-text-field
-                    v-model="name"
-                    label="User name"
-                    :error-messages="errors.collect('name')"
-                    v-validate="'required'"
-                    data-vv-name="name"></v-text-field>
+                  v-validate="'required'"
+                  v-model="name"
+                  :error-messages="errors.collect('name')"
+                  label="User name"
+                  data-vv-name="name"/>
                 <v-text-field
-                    v-model="email"
-                    label="E-mail address"
-                    :error-messages="errors.collect('email')"
-                    v-validate="'email'"
-                    data-vv-name="email"></v-text-field>
+                  v-validate="'email'"
+                  v-model="email"
+                  :error-messages="errors.collect('email')"
+                  label="E-mail address"
+                  data-vv-name="email"/>
                 <v-text-field
-                    hint="At least 6 characters"
-                    v-model="rawPassword"
-                    :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
-                    :append-icon-cb="() => (passwordHidden = !passwordHidden)"
-                    :type="passwordHidden ? 'password' : 'text'"
-                    counter
-                    label="New Password"
-                    :error-messages="errors.collect('Password')"
-                    v-validate="'required|min:6'"
-                    data-vv-name="Password"></v-text-field>
+                  v-model="rawPassword"
+                  :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
+                  v-validate="'required|min:6'"
+                  :append-icon-cb="() => (passwordHidden = !passwordHidden)"
+                  :type="passwordHidden ? 'password' : 'text'"
+                  :error-messages="errors.collect('Password')"
+                  hint="At least 6 characters"
+                  counter
+                  label="New Password"
+                  data-vv-name="Password"/>
                 <v-text-field
-                    hint="At least 6 characters"
-                    v-model="rawConfirmPassword"
-                    :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
-                    :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
-                    :type="confirmPasswordHidden ? 'password' : 'text'"
-                    counter
-                    label="Confirm New Password"
-                    :error-messages="errors.collect('Confirm_Password')"
-                    v-validate="'required|confirmed:Password'"
-                    data-vv-name="Confirm_Password"></v-text-field>
+                  v-model="rawConfirmPassword"
+                  :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
+                  v-validate="'required|confirmed:Password'"
+                  :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
+                  :type="confirmPasswordHidden ? 'password' : 'text'"
+                  :error-messages="errors.collect('Confirm_Password')"
+                  hint="At least 6 characters"
+                  counter
+                  label="Confirm New Password"
+                  data-vv-name="Confirm_Password"/>
               </v-flex>
             </v-layout>
 
             <v-btn
-                type="submit"
-                class="v-accent">Save</v-btn>
+              type="submit"
+              class="v-accent">Save</v-btn>
 
             <div
-                v-if="error"
-                style="color: red">
+              v-if="error"
+              style="color: red">
               {{ error }}
             </div>
 
@@ -79,7 +79,7 @@ import _ from 'lodash'
 
 export default {
   name: 'EditUser',
-  data () {
+  data() {
     let result = {}
     _.assign(result, this.$store.state.user)
     _.assign(result, {
@@ -93,7 +93,7 @@ export default {
     return result
   },
   methods: {
-    async submit () {
+    async submit() {
       this.error = ''
 
       let payload = {}

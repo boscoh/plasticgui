@@ -69,6 +69,6 @@ if (config.isUser) {
   ])
 }
 
-let router = new Router({routes})
+let router = new Router({ routes })
 
 export default router

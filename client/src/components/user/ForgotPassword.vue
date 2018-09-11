@@ -8,32 +8,32 @@
 
       <v-card-text>
         <form
-            novalidate
-            v-on:submit.prevent="submit">
+          novalidate
+          @submit.prevent="submit">
           <v-container
-              fluid
-              grid-list-xl>
+            fluid
+            grid-list-xl>
 
             <v-layout
-                row
-                wrap>
+              row
+              wrap>
               <v-flex class="xs12">
                 <v-text-field
-                    v-model="user.email"
-                    label="E-mail address"
-                    :error-messages="errors.collect('email')"
-                    v-validate="'email'"
-                    data-vv-name="email"></v-text-field>
+                  v-validate="'email'"
+                  v-model="user.email"
+                  :error-messages="errors.collect('email')"
+                  label="E-mail address"
+                  data-vv-name="email"/>
               </v-flex>
             </v-layout>
 
             <v-btn
-                type="submit"
-                class="v-accent">Send password reset email</v-btn>
+              type="submit"
+              class="v-accent">Send password reset email</v-btn>
 
             <div
-                v-if="error"
-                style="color: red">
+              v-if="error"
+              style="color: red">
               {{ error }}
             </div>
 
@@ -55,7 +55,7 @@ import config from '../../config'
 
 export default {
   name: 'ForgotPassword',
-  data () {
+  data() {
     return {
       title: config.title,
       passwordHidden: true,
@@ -65,16 +65,16 @@ export default {
   },
   computed: {
     user: {
-      get () {
+      get() {
         return this.$store.state.user
       },
-      set (u) {
+      set(u) {
         this.$store.commit('setUser', u)
       }
     }
   },
   methods: {
-    async submit () {
+    async submit() {
       let payload = this.user.email
       console.log('> ForgotPassword.submit', payload)
       let response = await auth.forgotPassword(payload)
