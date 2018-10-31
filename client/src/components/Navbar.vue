@@ -19,68 +19,65 @@
 
     <v-spacer/>
 
-    <v-tabs
-      dark
+    <v-toolbar-items
       color="indigo">
-      <v-tab
+      <v-btn 
         id="tab-home"
+        flat
         to="/"
         router>Home
-      </v-tab>
-      <v-tab
+      </v-btn>
+      <v-btn 
         v-show="user.authenticated"
         id="tab-search"
+        flat
         to="/private"
         router>Private
-      </v-tab>
-      <v-tab
+      </v-btn>
+      <v-btn 
         id="tab-about"
+        flat
         to="/about"
         router>About
-      </v-tab>
-    </v-tabs>
-
-    <v-spacer/>
-
-    <div v-if="isUser">
-      <v-menu
-        v-if="user.authenticated"
-        bottom
-        left
-        open-on-hover>
-
-        <v-btn
-          slot="activator"
-          color="indigo">
-          {{ user.name }}
-          <v-icon>arrow_drop_down</v-icon>
-        </v-btn>
-
-        <v-list>
-          <v-list-tile @click="editUser">
-            <v-list-tile-title>
-              Edit User
-            </v-list-tile-title>
-          </v-list-tile>
-
-          <v-list-tile @click="logout">
-            <v-list-tile-title>
-              Logout
-            </v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-
-      </v-menu>
-
-      <v-btn
-        v-else
-        dark
-        color="indigo"
-        to="/login">
-        Login
       </v-btn>
 
-    </div>
+      <template v-if="isUser">
+        <v-menu
+          v-if="user.authenticated"
+          bottom
+          left
+          flat
+          open-on-hover>
+          <v-btn
+            slot="activator"
+            flat>
+            {{ user.name }}
+            <v-icon>arrow_drop_down</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile @click="editUser">
+              <v-list-tile-title>
+                Edit User
+              </v-list-tile-title>
+            </v-list-tile>
+
+            <v-list-tile @click="logout">
+              <v-list-tile-title>
+                Logout
+              </v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+
+        <v-btn
+          v-else
+          flat
+          to="/login">
+          Login
+        </v-btn>
+      </template>
+
+    </v-toolbar-items>
 
   </v-toolbar>
 </template>

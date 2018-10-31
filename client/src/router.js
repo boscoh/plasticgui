@@ -5,8 +5,8 @@ import config from './config.js'
 
 import Home from './components/Home'
 
-import About from './components/tabs/About'
-import Private from './components/tabs/Private'
+import About from './components/About'
+import Private from './components/Private'
 
 import Login from './components/user/Login'
 import Register from './components/user/Register'
