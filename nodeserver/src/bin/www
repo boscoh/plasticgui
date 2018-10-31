@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * Create config.js from defaultConfig.js if not found
+ * Create config.js from default-config.js if not found
  */
 
 const path = require('path')
 const fs = require('fs-extra')
 const configJs = path.resolve(__dirname, '../config.js')
-const defaultConfigJs = path.resolve(__dirname, '../defaultConfig.js')
+const defaultConfigJs = path.resolve(__dirname, '../default-config.js')
 if (!fs.existsSync(configJs)) {
   fs.copySync(defaultConfigJs, configJs)
 }

@@ -4,9 +4,9 @@
   "author": "Bosco Ho <apposite@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "node checkConfig.js && webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "node check-config.js && webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node checkConfig.js && node build/build.js",
+    "build": "node check-config.js && node build/build.js",
     "format": "prettier-standard 'src/**/*.js'",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },

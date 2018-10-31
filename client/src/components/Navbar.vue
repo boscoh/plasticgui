@@ -6,9 +6,8 @@
 
     <v-avatar
       :tile="true"
-      :size="24"
-      color="indigo">
-      <img src="/static/logo.png">
+      :size="24">
+      <img src="static/logo.png">
     </v-avatar>
 
     <v-toolbar-title
@@ -19,8 +18,7 @@
 
     <v-spacer/>
 
-    <v-toolbar-items
-      color="indigo">
+    <v-toolbar-items>
       <v-btn 
         id="tab-home"
         flat
