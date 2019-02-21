@@ -75,7 +75,7 @@ def publicLoginUser(user_attr):
     if user_attr['email']:
         kwargs['email'] = user_attr['email']
 
-    print("> handler.publicLoginUser loading", kwargs, user_attr['password'])
+    print("> handler.publicLoginUser loading", kwargs, user_attr)
     try:
         user = dbmodel.load_user(**kwargs)
     except:

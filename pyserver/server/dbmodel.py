@@ -90,9 +90,11 @@ class UserDb(db.Model):
 
     # passwords are salted using werkzeug.security
     def set_password(self, password):
+        print('UserDb.set_password', str(password), generate_password_hash(str(password)))
         self.password = generate_password_hash(str(password))
 
     def check_password(self, password):
+        print('UserDb.check_password', str(password), generate_password_hash(str(password)), self.password)
         return check_password_hash(self.password, str(password))
 
     # following methods are required by flask-login
@@ -224,7 +226,10 @@ def update_user_from_attr(user_attr, db_session=None):
     user = load_user(id=user_attr['id'])
     for key, value in user_attr.items():
         if value is not None:
-            setattr(user, key, value)
+            if key == "password":
+                user.set_password(value)
+            else:
+                setattr(user, key, value)
     db_session.add(user)
     db_session.commit()
     return parse_user(user)
