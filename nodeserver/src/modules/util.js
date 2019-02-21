@@ -2,12 +2,11 @@ const _ = require('lodash')
 const path = require('path')
 
 module.exports = {
-
   /**
    * Returns a nicely formatted string of JSON-literal
    * @param o
    */
-  jstr (o) {
+  jstr(o) {
     return JSON.stringify(o, null, 2)
   },
 
@@ -18,7 +17,7 @@ module.exports = {
    * @param item
    * @param key
    */
-  removeItem (aList, item, key) {
+  removeItem(aList, item, key) {
     const iLast = aList.length - 1
     for (let i = iLast; i >= 0; i -= 1) {
       if (aList[i][key] === item[key]) {
@@ -33,7 +32,7 @@ module.exports = {
    * @param v
    * @returns {Array}
    */
-  makeArray (n, v) {
+  makeArray(n, v) {
     let l = []
     for (let i = 0; i < n; i += 1) {
       l.push(v)
@@ -41,9 +40,11 @@ module.exports = {
     return l
   },
 
-  delay (time) {
-    return new Promise(function (resolve) {
-      setTimeout(function () { resolve(time) }, time)
+  delay(time) {
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        resolve(time)
+      }, time)
     })
   },
 
@@ -54,7 +55,7 @@ module.exports = {
    * @param testStrList
    * @returns {boolean}
    */
-  isStringInStringList (str, testStrList) {
+  isStringInStringList(str, testStrList) {
     for (let testStr of testStrList) {
       if (_.includes(testStr, str)) {
         return true
@@ -63,12 +64,12 @@ module.exports = {
     return false
   },
 
-  getCurrentTimeStr () {
+  getCurrentTimeStr() {
     let date = new Date()
     return date.toJSON()
   },
 
-  extractId (p, delimiter = '_', iToken = 0) {
+  extractId(p, delimiter = '_', iToken = 0) {
     let ext = path.extname(p)
     let base = path.basename(p, ext)
     let tokens = base.split(delimiter)
@@ -78,5 +79,4 @@ module.exports = {
       return ''
     }
   }
-
 }

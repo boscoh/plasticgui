@@ -5,7 +5,7 @@ import Chart from 'chart.js'
  * Functions to generate chartJs data for model
  */
 
-function makeLineChartData (title, xAxisLabel, yAxisLabel) {
+function makeLineChartData(title, xAxisLabel, yAxisLabel) {
   return {
     type: 'scatter',
     data: {
@@ -22,22 +22,26 @@ function makeLineChartData (title, xAxisLabel, yAxisLabel) {
       maintainAspectRatio: false,
       responsive: true,
       scales: {
-        xAxes: [{
-          type: 'linear',
-          position: 'bottom',
-          scaleLabel: {
-            display: true,
-            labelString: xAxisLabel
-          },
-          ticks: {}
-        }],
-        yAxes: [{
-          type: 'linear',
-          scaleLabel: {
-            display: true,
-            labelString: yAxisLabel
+        xAxes: [
+          {
+            type: 'linear',
+            position: 'bottom',
+            scaleLabel: {
+              display: true,
+              labelString: xAxisLabel
+            },
+            ticks: {}
           }
-        }]
+        ],
+        yAxes: [
+          {
+            type: 'linear',
+            scaleLabel: {
+              display: true,
+              labelString: yAxisLabel
+            }
+          }
+        ]
       }
     }
   }
@@ -63,7 +67,7 @@ const colors = [
 
 let seenNames = []
 
-function getColor (name) {
+function getColor(name) {
   let i = seenNames.indexOf(name)
   if (i < 0) {
     seenNames.push(name)
@@ -78,7 +82,7 @@ function getColor (name) {
  *
  */
 class ChartWidget {
-  constructor (divTag, chartData) {
+  constructor(divTag, chartData) {
     this.divTag = divTag
     this.div = $(this.divTag)
     let canvas = $('<canvas>')
@@ -91,15 +95,15 @@ class ChartWidget {
     this.chart = new Chart(canvas, this.chartData)
   }
 
-  getDatasets () {
+  getDatasets() {
     return this.chartData.data.datasets
   }
 
-  getChartOptions () {
+  getChartOptions() {
     return this.chartData.options
   }
 
-  addDataset (name, xValues, yValues) {
+  addDataset(name, xValues, yValues) {
     let datasets = this.getDatasets()
     let newDatasetData = []
     if (xValues && yValues) {
@@ -124,7 +128,7 @@ class ChartWidget {
     return iDataset
   }
 
-  updateDataset (iDataset, xValues, yValues) {
+  updateDataset(iDataset, xValues, yValues) {
     let data = []
     for (let i = 0; i < xValues.length; i += 1) {
       data.push({
@@ -137,17 +141,17 @@ class ChartWidget {
     this.chart.update()
   }
 
-  setTitle (title) {
+  setTitle(title) {
     let options = this.getChartOptions()
     options.title.text = title
   }
 
-  setXLabel (xLabel) {
+  setXLabel(xLabel) {
     let options = this.getChartOptions()
     options.scales.xAxes[0].scaleLabel.labelString = xLabel
   }
 
-  setYLabel (yLabel) {
+  setYLabel(yLabel) {
     let options = this.getChartOptions()
     options.scales.yAxes[0].scaleLabel.labelString = yLabel
   }

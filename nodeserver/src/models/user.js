@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING,
-      set (val) {
+      set(val) {
         let saltedPassword = bcrypt.hashSync(val, bcrypt.genSaltSync(10))
         this.setDataValue('password', saltedPassword)
       }
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     }
   })
-  User.associate = function (models) {
+  User.associate = function(models) {
     User.hasMany(models.Custom)
   }
   return User

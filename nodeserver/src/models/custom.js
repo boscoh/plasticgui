@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.STRING,
     data: DataTypes.BLOB
   })
-  Custom.associate = function (models) {
+  Custom.associate = function(models) {
     Custom.belongsTo(models.User)
   }
   return Custom

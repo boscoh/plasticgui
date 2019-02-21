@@ -16,10 +16,14 @@ module.exports = {
     },
     email: {
       transport: {
-        host: 'smtp.csiro.au',
-        port: 25
+        host: 'smtp.host',
+        port: 465,
+        auth: {
+          user: '',
+          pass: ''
+        }
       },
-      resetEmail: 'group18@csiro.au'
+      resetEmail: 'from@from.com'
     }
   }
 }

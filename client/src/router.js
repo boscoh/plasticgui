@@ -3,17 +3,17 @@ import Router from 'vue-router'
 
 import config from './config.js'
 
-import Home from './components/Home'
+import Home from './pages/Home'
 
-import About from './components/About'
-import Private from './components/Private'
+import About from './pages/About'
 
-import Login from './components/user/Login'
-import Register from './components/user/Register'
-import EditUser from './components/user/EditUser'
-import AdminUsers from './components/user/AdminUsers'
-import ForgotPassword from './components/user/ForgotPassword'
-import ResetPassword from './components/user/ResetPassword'
+import Private from './pages/user/Private'
+import Login from './pages/user/Login'
+import Register from './pages/user/Register'
+import EditUser from './pages/user/EditUser'
+import AdminUsers from './pages/user/AdminUsers'
+import ForgotPassword from './pages/user/ForgotPassword'
+import ResetPassword from './pages/user/ResetPassword'
 
 Vue.use(Router)
 let routes = [

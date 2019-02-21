@@ -16,7 +16,9 @@ let handlers = []
 fs
   .readdirSync(__dirname)
   .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
+    return (
+      file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
+    )
   })
   .forEach(file => {
     let handler = require(path.join(__dirname, file))
@@ -27,27 +29,27 @@ fs
  * App Specific handlers
  */
 
-async function publicGetText () {
+async function publicGetText() {
   return {
-    'text': 'Example text from local webserver',
-    'isRunning': true
+    text: 'Example text from local webserver',
+    isRunning: true
   }
 }
 
-async function publicDownloadGetReadme () {
+async function publicDownloadGetReadme() {
   return {
-    'filename': path.resolve(dirname, '../../../readme.md'),
-    'data': {
-      'success': true
+    filename: path.resolve(dirname, '../../../readme.md'),
+    data: {
+      success: true
     }
   }
 }
 
-async function publicDownloadLogo () {
+async function publicDownloadLogo() {
   return {
-    'filename': path.resolve(dirname, '../../../client/static/logo.png'),
-    'data': {
-      'success': true
+    filename: path.resolve(dirname, '../../../client/static/logo.png'),
+    data: {
+      success: true
     }
   }
 }
@@ -60,7 +62,7 @@ async function publicDownloadLogo () {
  * @param fileList
  * @returns {Promise<{files: Array}>}
  */
-async function publicUploadFiles (fileList) {
+async function publicUploadFiles(fileList) {
   const timestampDir = String(new Date().getTime())
   const filesDir = config.development.filesDir
 
@@ -77,14 +79,14 @@ async function publicUploadFiles (fileList) {
   }
 
   console.log('>> handlers.publicUploadFiles', targetPaths)
-  return {files: targetPaths}
+  return { files: targetPaths }
 }
 
 handlers.push({
   publicGetText,
   publicDownloadLogo,
   publicDownloadGetReadme,
-  publicUploadFiles,
+  publicUploadFiles
 })
 
 module.exports = Object.assign(...handlers)

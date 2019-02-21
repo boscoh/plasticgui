@@ -7,7 +7,7 @@ const config = require('./config')
 
 const mime = require('mime')
 const multer = require('multer')
-const upload = multer({dest: config.development.filesDir})
+const upload = multer({ dest: config.development.filesDir })
 
 const passport = require('passport')
 const express = require('express')
@@ -61,9 +61,12 @@ router.post('/api/rpc-run', (req, res, next) => {
           jsonrpc: '2.0'
         })
       }
-      req.logIn(user, (error) => {
+      req.logIn(user, error => {
         if (error) {
-          console.log('>> router.rpc-run.publicLoginUser session publicLoginUser error', err)
+          console.log(
+            '>> router.rpc-run.publicLoginUser session publicLoginUser error',
+            err
+          )
           return next(error)
         }
         console.log('>> router.rpc-run.publicLoginUser success', user)
@@ -187,15 +190,21 @@ router.post('/api/rpc-download', (req, res) => {
 
     downloadFn(...params)
       .then(result => {
-        res.set('data', JSON.stringify({
-          result: result.data,
-          jsonrpc: '2.0'
-        }))
+        res.set(
+          'data',
+          JSON.stringify({
+            result: result.data,
+            jsonrpc: '2.0'
+          })
+        )
         res.set('filename', path.basename(result.filename))
         res.set('Access-Control-Expose-Headers', 'data, filename')
-        let mimetype = mime.lookup(result.filename);
-        res.setHeader('Content-disposition', 'attachment; filename=' + result.filename);
-        res.setHeader('Content-type', mimetype);
+        let mimetype = mime.lookup(result.filename)
+        res.setHeader(
+          'Content-disposition',
+          'attachment; filename=' + result.filename
+        )
+        res.setHeader('Content-type', mimetype)
         res.download(result.filename)
       })
       .catch(e => {
@@ -204,10 +213,13 @@ router.post('/api/rpc-download', (req, res) => {
           message: e.toString()
         }
         console.log(e.toString())
-        res.set('data', JSON.stringify({
-          error,
-          jsonrpc: '2.0'
-        }))
+        res.set(
+          'data',
+          JSON.stringify({
+            error,
+            jsonrpc: '2.0'
+          })
+        )
         res.set('Access-Control-Expose-Headers', 'data, filename')
       })
   } else {
@@ -215,11 +227,13 @@ router.post('/api/rpc-download', (req, res) => {
       code: -1,
       message: `Remote uploadFn ${method} not found`
     }
-    res.set('data', JSON.stringify({
-      error,
-      jsonrpc: '2.0'
-    }))
+    res.set(
+      'data',
+      JSON.stringify({
+        error,
+        jsonrpc: '2.0'
+      })
+    )
     res.set('Access-Control-Expose-Headers', 'data')
   }
 })
-

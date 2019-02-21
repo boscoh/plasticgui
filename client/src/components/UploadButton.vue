@@ -12,8 +12,14 @@
 export default {
   name: 'UploadButton',
   props: {
-    selectedCallback: Function,
-    title: String
+    selectedCallback: {
+      type: Function,
+      default: () => {}
+    },
+    title: {
+      type: String,
+      default: 'Upload'
+    }
   },
   methods: {
     fileSelected(e) {

@@ -1,8 +1,8 @@
 <template>
   <v-toolbar
     dense
-    dark
-    color="indigo">
+    light
+    color="white">
 
     <v-avatar
       :tile="true"
@@ -16,7 +16,7 @@
       {{ title }}
     </v-toolbar-title>
 
-    <v-spacer/>
+    <v-spacer></v-spacer>
 
     <v-toolbar-items>
       <v-btn 

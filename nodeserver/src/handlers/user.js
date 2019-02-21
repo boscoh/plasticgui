@@ -2,13 +2,16 @@ const models = require('../models')
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 const nodemailer = require('nodemailer')
+
 const Op = models.Sequelize.Op
-const emailConfig = models.config.email
-const clientConfig = models.config.client
+
+const config = require('../config')
+const emailConfig = config.development.email
+const clientConfig = config.development.client
 
 const User = models.User
 
-function createUser (values) {
+function createUser(values) {
   return User.findOne({
     where: {
       id: values.id
@@ -20,7 +23,7 @@ function createUser (values) {
   })
 }
 
-function updateUser (values) {
+function updateUser(values) {
   return User.findOne({
     where: {
       id: values.id
@@ -34,7 +37,7 @@ function updateUser (values) {
   })
 }
 
-function fetchUser (values) {
+function fetchUser(values) {
   return User.findOne({
     where: values
   }).then(user => {
@@ -46,7 +49,7 @@ function fetchUser (values) {
   })
 }
 
-function fetchUserByToken (token) {
+function fetchUserByToken(token) {
   return User.findOne({
     where: {
       resetPasswordToken: token,
@@ -63,7 +66,7 @@ function fetchUserByToken (token) {
   })
 }
 
-function checkUserWithPassword (user, password) {
+function checkUserWithPassword(user, password) {
   return new Promise(resolve => {
     bcrypt.compare(password, user.password, (err, isMatch) => {
       if (err) {
@@ -77,7 +80,7 @@ function checkUserWithPassword (user, password) {
   })
 }
 
-async function publicRegisterUser (user) {
+async function publicRegisterUser(user) {
   let errors = []
   if (!user.name) {
     errors.push('no user name')
@@ -105,7 +108,7 @@ async function publicRegisterUser (user) {
       success: true
     }
   } catch (e) {
-    throw new Error('Couldn\'t register, is your email already in use?')
+    throw new Error("Couldn't register, is your email already in use?")
   }
 }
 
@@ -114,7 +117,7 @@ async function publicRegisterUser (user) {
  * @param {Object} user
  * @promise {User}
  */
-async function loginUpdateUser (user) {
+async function loginUpdateUser(user) {
   const keys = ['id', 'name', 'email', 'password']
   let values = {}
   for (let key of keys) {
@@ -136,17 +139,17 @@ async function loginUpdateUser (user) {
       success: true
     }
   } catch (err) {
-    throw new Error('Couldn\'t update user - ' + err.toString())
+    throw new Error("Couldn't update user - " + err.toString())
   }
 }
 
-const getToken = async function () {
+const getToken = async function() {
   const buf = bcrypt.genSaltSync(10)
   const token = buf.toString('hex')
   return token
 }
 
-async function publicForgotPassword (email) {
+async function publicForgotPassword(email) {
   if (email) {
     email = email.toLowerCase()
   }
@@ -157,7 +160,7 @@ async function publicForgotPassword (email) {
     throw new Error('The email [' + email + '] has not been registered')
   }
   userByEmail.resetPasswordToken = await getToken()
-  let expiryTime = new Date().getTime() + (1 * 60 * 60 * 1000) // 1 hour from now
+  let expiryTime = new Date().getTime() + 1 * 60 * 60 * 1000 // 1 hour from now
   userByEmail.resetPasswordExpiresOn = expiryTime
 
   updateUser(userByEmail)
@@ -168,15 +171,26 @@ async function publicForgotPassword (email) {
     to: userByEmail.email,
     from: emailConfig.resetEmail,
     subject: 'Password Reset',
-    text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-    clientConfig.host + '/#/reset-password/' + encodeURIComponent(userByEmail.resetPasswordToken) + '\n\n' +
-    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+    text:
+      'You are receiving this because you (or someone else) ' +
+      'have requested the reset of the password for your account.\n\n' +
+      'Please click on the following link, or paste this ' +
+      'into your browser to complete the process:\n\n' +
+      clientConfig.host +
+      '/#/reset-password/' +
+      encodeURIComponent(userByEmail.resetPasswordToken) +
+      '\n\n' +
+      'If you did not request this, please ignore this email ' +
+      'and your password will remain unchanged.\n'
   }
+  console.log('user.publicForgotPassword', mailOptions)
   try {
     await smtpTransport.sendMail(mailOptions)
     return {
-      message: 'An e-mail has been sent to ' + userByEmail.email + ' with further instructions.',
+      message:
+        'An e-mail has been sent to ' +
+        userByEmail.email +
+        ' with further instructions.',
       success: true
     }
   } catch (err) {
@@ -184,7 +198,7 @@ async function publicForgotPassword (email) {
   }
 }
 
-async function publicResetPassword (token, password) {
+async function publicResetPassword(token, password) {
   const userByToken = await fetchUserByToken(token)
   if (!userByToken) {
     throw new Error('Password reset token is invalid or has expired.')
@@ -203,13 +217,13 @@ async function publicResetPassword (token, password) {
   }
 }
 
-async function adminGetUsers () {
+async function adminGetUsers() {
   let users = await User.findAll()
-  return {users: _.map(users, models.unwrapInstance)}
+  return { users: _.map(users, models.unwrapInstance) }
 }
 
-async function adminDeleteUser (userId) {
-  await User.destroy({where: {id: userId}})
+async function adminDeleteUser(userId) {
+  await User.destroy({ where: { id: userId } })
   return adminGetUsers()
 }
 

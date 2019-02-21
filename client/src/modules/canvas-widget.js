@@ -9,7 +9,7 @@ import $ from 'jquery'
  */
 
 class CanvasWidget {
-  constructor (selector) {
+  constructor(selector) {
     this.parentDiv = $(selector)
 
     this.div = $('<div>')
@@ -41,50 +41,51 @@ class CanvasWidget {
     bind('touchcancel', e => this.mouseup(e))
   }
 
-  width () {
+  width() {
     return this.parentDiv.width()
   }
 
-  height () {
+  height() {
     return this.parentDiv.height()
   }
 
-  x () {
+  x() {
     let parentDivPos = this.parentDiv.offset()
     return parentDivPos.left
   }
 
-  y () {
+  y() {
     let parentDivPos = this.parentDiv.offset()
     return parentDivPos.top
   }
 
-  inside (x, y) {
+  inside(x, y) {
     return (
-      (x >= this.x()) &&
-      (x <= this.x() + this.width()) &&
-      (y >= this.y()) &&
-      (y <= this.y() + this.height()))
+      x >= this.x() &&
+      x <= this.x() + this.width() &&
+      y >= this.y() &&
+      y <= this.y() + this.height()
+    )
   }
 
-  draw () {}
+  draw() {}
 
-  resize () {
+  resize() {
     this.canvasDom.width = this.width()
     this.canvasDom.height = this.height()
   }
 
-  strokeRect (x, y, w, h, strokeStyle) {
+  strokeRect(x, y, w, h, strokeStyle) {
     this.drawContext.strokeStyle = strokeStyle
     this.drawContext.strokeRect(x, y, w, h)
   }
 
-  fillRect (x, y, w, h, fillStyle) {
+  fillRect(x, y, w, h, fillStyle) {
     this.drawContext.fillStyle = fillStyle
     this.drawContext.fillRect(x, y, w, h)
   }
 
-  line (x1, y1, x2, y2, lineWidth, color) {
+  line(x1, y1, x2, y2, lineWidth, color) {
     this.drawContext.moveTo(x1, y1)
     this.drawContext.lineTo(x2, y2)
     this.drawContext.lineWidth = lineWidth
@@ -92,7 +93,7 @@ class CanvasWidget {
     this.drawContext.stroke()
   }
 
-  text (text, x, y, font, color, align) {
+  text(text, x, y, font, color, align) {
     this.drawContext.fillStyle = color
     this.drawContext.font = font
     this.drawContext.textAlign = align
@@ -100,28 +101,28 @@ class CanvasWidget {
     this.drawContext.fillText(text, x, y)
   }
 
-  textWidth (text, font) {
+  textWidth(text, font) {
     this.drawContext.font = font
     this.drawContext.textAlign = 'center'
     return this.drawContext.measureText(text).width
   }
 
-  mousedown (event) {
+  mousedown(event) {
     event.preventDefault()
     this.mousePressed = true
     this.mousemove(event)
   }
 
-  mousemove (event) {
+  mousemove(event) {
     this.getPointer(event)
   }
 
-  mouseup (event) {
+  mouseup(event) {
     event.preventDefault()
     this.mousePressed = false
   }
 
-  getPointer (event) {
+  getPointer(event) {
     let x, y
     if (event.touches) {
       x = event.touches[0].clientX
@@ -131,12 +132,14 @@ class CanvasWidget {
       y = event.clientY
     }
 
-    this.pointerX = x +
+    this.pointerX =
+      x +
       document.body.scrollLeft +
       document.documentElement.scrollLeft -
       this.x()
 
-    this.pointerY = y +
+    this.pointerY =
+      y +
       document.body.scrollTop +
       document.documentElement.scrollTop -
       this.y()

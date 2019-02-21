@@ -1,5 +1,9 @@
 <template>
   <v-container
+    style="
+      margin-top: 10px;
+      height: calc(100vh - 48px);
+      overflow: auto"
     fluid
     grid-list-xl>
 
@@ -7,7 +11,7 @@
       row
       wrap>
       <v-flex xs12>
-        <h2>
+        <h2 class="display-2 pt-4 pb-3">
           Example Widgets
         </h2>
       </v-flex>
@@ -27,7 +31,7 @@
           <v-card-text>
             <div
               id="webgl"
-              style="width: 100%; height: 200px"/>
+              style="width: 100%; height: 200px"></div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -42,7 +46,7 @@
           <v-card-text>
             <div
               id="rect"
-              style="width: 200px; height: 200px"/>
+              style="width: 200px; height: 200px"></div>
             {{ pointerX }} - {{ pointerY }}
           </v-card-text>
         </v-card>
@@ -70,7 +74,7 @@
                     :step="param.interval"
                     :max="param.max"
                     v-model="param.value"
-                    @callback="changeGraph()"/>
+                    @callback="changeGraph()"></v-slider>
                 </v-flex>
               </v-layout>
             </div>
@@ -82,7 +86,7 @@
             <v-layout>
               <v-flex
                 id="charts"
-                xs12/>
+                xs12></v-flex>
             </v-layout>
           </v-card-text>
         </v-card>
@@ -139,10 +143,10 @@
           <v-card-text>
             <upload-button
               :selected-callback="fileSelectedFunc"
-              title="Upload"/>
+              title="Upload"></upload-button>
             <v-list>
               <v-list-tile
-                v-for="file, i in uploadFiles"
+                v-for="(file, i) in uploadFiles"
                 :key="i">
                 <a :href="file.url">{{ file.name }}</a>
               </v-list-tile>
@@ -187,202 +191,201 @@
 </style>
 
 <script>
-import _ from "lodash";
+import _ from 'lodash'
 
-import rpc from "../modules/rpc";
-import vueSlider from "vue-slider-component";
-import config from "../config";
-import ChartWidget from "../modules/chart-widget";
-import CanvasWidget from "../modules/canvas-widget";
-import Model from "../modules/model";
-import webglstarterkit from "../modules/webgl-widget";
-import UploadButton from "./UploadButton";
+import rpc from '../modules/rpc'
+import vueSlider from 'vue-slider-component'
+import config from '../config'
+import ChartWidget from '../modules/chart-widget'
+import CanvasWidget from '../modules/canvas-widget'
+import Model from '../modules/model'
+import webglstarterkit from '../modules/webgl-widget'
+import UploadButton from '../components/UploadButton'
 
-const THREE = require("three");
+const THREE = require('three')
 
 function getRandomColor() {
-  let letters = "0123456789ABCDEF";
-  let color = "#";
+  let letters = '0123456789ABCDEF'
+  let color = '#'
   for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
+    color += letters[Math.floor(Math.random() * 16)]
   }
-  return color;
+  return color
 }
 
 export default {
-  name: "Experiments",
+  name: 'Experiments',
   components: { vueSlider, UploadButton },
   data() {
     return {
-      text: "",
-      error: "",
+      text: '',
+      error: '',
       pointerX: 0,
       pointerY: 0,
       uploadFiles: [],
-      task: "",
+      task: '',
       sliders: [
         {
-          key: "alpha",
+          key: 'alpha',
           value: 1,
           max: 10,
           interval: 0.1
         },
         {
-          key: "beta",
+          key: 'beta',
           value: 1,
           max: 7,
           interval: 0.1
         },
         {
-          key: "gamma",
+          key: 'gamma',
           value: 0.5,
           max: 10,
           interval: 0.1
         }
       ]
-    };
+    }
   },
   watch: {
     sliders: {
       handler() {
-        this.changeGraph();
+        this.changeGraph()
       },
       deep: true
     }
   },
   async mounted() {
-    let params = {};
+    let params = {}
     for (let slider of this.sliders) {
-      params[slider.key] = slider.value;
+      params[slider.key] = slider.value
     }
 
-    this.model = new Model(params);
+    this.model = new Model(params)
     this.model.initializeVars = function() {
-      this.vars.y = 0;
-    };
+      this.vars.y = 0
+    }
     this.model.update = function(iStep) {
       this.vars.y =
         this.params.alpha *
-        Math.sin(this.params.beta * iStep + this.params.gamma);
-    };
+        Math.sin(this.params.beta * iStep + this.params.gamma)
+    }
 
-    this.chartWidget = new ChartWidget("#charts");
-    this.chartWidget.setTitle("title");
-    this.chartWidget.setXLabel("xLabel");
-    this.chartWidget.setYLabel("yLabel");
-    this.chartWidget.addDataset("sample");
-    this.randomizeGraph();
+    this.chartWidget = new ChartWidget('#charts')
+    this.chartWidget.setTitle('title')
+    this.chartWidget.setXLabel('xLabel')
+    this.chartWidget.setYLabel('yLabel')
+    this.chartWidget.addDataset('sample')
+    this.randomizeGraph()
 
-    this.canvasWidget = new CanvasWidget("#rect");
-    this.canvasWidget.drawWidth = this.canvasWidget.width();
-    this.canvasWidget.drawHeight = this.canvasWidget.height();
+    this.canvasWidget = new CanvasWidget('#rect')
+    this.canvasWidget.drawWidth = this.canvasWidget.width()
+    this.canvasWidget.drawHeight = this.canvasWidget.height()
     this.canvasWidget.mousemove = e => {
-      this.canvasWidget.getPointer(event);
-      this.canvasWidget.drawWidth = this.canvasWidget.pointerX;
-      this.canvasWidget.drawHeight = this.canvasWidget.pointerY;
-      this.pointerX = this.canvasWidget.pointerX.toFixed(0);
-      this.pointerY = this.canvasWidget.pointerY.toFixed(0);
-      this.drawCanvas();
-    };
-    this.drawCanvas();
+      this.canvasWidget.getPointer(event)
+      this.canvasWidget.drawWidth = this.canvasWidget.pointerX
+      this.canvasWidget.drawHeight = this.canvasWidget.pointerY
+      this.pointerX = this.canvasWidget.pointerX.toFixed(0)
+      this.pointerY = this.canvasWidget.pointerY.toFixed(0)
+      this.drawCanvas()
+    }
+    this.drawCanvas()
 
-    this.webglWidget = new webglstarterkit.WebglWidget("#webgl", "#FFFFFF");
-    let geometry = new THREE.BoxGeometry(50, 32, 32);
+    this.webglWidget = new webglstarterkit.WebglWidget('#webgl', '#FFFFFF')
+    let geometry = new THREE.BoxGeometry(50, 32, 32)
     let material = new THREE.MeshPhongMaterial({
       color: 0x156289,
       emissive: 0x072534,
-      side: THREE.DoubleSide,
-      flatShading: true
-    });
-    this.webglWidget.scene.add(new THREE.Mesh(geometry, material));
-    this.webglWidget.moveCameraToShowAll();
+      side: THREE.DoubleSide
+    })
+    this.webglWidget.scene.add(new THREE.Mesh(geometry, material))
+    this.webglWidget.moveCameraToShowAll()
     this.webglWidget.update = () => {
-      this.webglWidget.rotateCameraAroundScene(0.005, 0.01, 0);
-    };
-    this.webglWidget.draw();
+      this.webglWidget.rotateCameraAroundScene(0.005, 0.01, 0)
+    }
+    this.webglWidget.draw()
 
-    let response = await rpc.rpcRun("publicGetText");
+    let response = await rpc.rpcRun('publicGetText')
     if (response.result) {
-      this.text = response.result.text;
+      this.text = response.result.text
     } else {
-      this.error = response.error.message;
+      this.error = response.error.message
     }
   },
   methods: {
     async getReadme() {
-      let response = await rpc.rpcDownload("publicDownloadGetReadme");
+      let response = await rpc.rpcDownload('publicDownloadGetReadme')
       if (response.error) {
-        this.error = response.error.message;
+        this.error = response.error.message
       }
     },
     async getLogoPng() {
-      let response = await rpc.rpcDownload("publicDownloadLogo");
+      let response = await rpc.rpcDownload('publicDownloadLogo')
       if (response.error) {
-        this.error = response.error.message;
+        this.error = response.error.message
       }
     },
     drawCanvas() {
       for (let i = 0; i < 10; i += 1) {
-        let x1 = Math.random() * this.canvasWidget.drawWidth;
-        let y1 = Math.random() * this.canvasWidget.drawHeight;
-        let x2 = Math.random() * (this.canvasWidget.drawWidth - x1);
-        let y2 = Math.random() * (this.canvasWidget.drawHeight - y1);
-        this.canvasWidget.fillRect(x1, y1, x2 - x1, y2 - y1, getRandomColor());
+        let x1 = Math.random() * this.canvasWidget.drawWidth
+        let y1 = Math.random() * this.canvasWidget.drawHeight
+        let x2 = Math.random() * (this.canvasWidget.drawWidth - x1)
+        let y2 = Math.random() * (this.canvasWidget.drawHeight - y1)
+        this.canvasWidget.fillRect(x1, y1, x2 - x1, y2 - y1, getRandomColor())
       }
     },
     selectFiles(filelist) {
-      this.filelist = filelist;
+      this.filelist = filelist
     },
     async upload() {
-      this.uploadFiles = [];
+      this.uploadFiles = []
       if (this.filelist) {
-        this.error = "";
-        let response = await rpc.rpcUpload("publicUploadFiles", this.filelist);
+        this.error = ''
+        let response = await rpc.rpcUpload('publicUploadFiles', this.filelist)
         if (response.result) {
           this.uploadFiles = _.map(
             response.result.files,
             f => config.apiUrl + f
-          );
+          )
         } else {
-          this.error = response.error.message;
+          this.error = response.error.message
         }
       } else {
-        this.error = "No files selected";
+        this.error = 'No files selected'
       }
     },
     changeGraph() {
-      console.log("changed graph", this.sliders);
+      console.log('changed graph', this.sliders)
       for (let slider of this.sliders) {
-        this.model.params[slider.key] = slider.value;
+        this.model.params[slider.key] = slider.value
       }
-      let nStep = 100;
-      let xValues = _.range(0, nStep);
-      this.model.resetSoln();
-      this.model.integrate(nStep);
-      let yValues = this.model.soln.y;
-      this.chartWidget.updateDataset(0, xValues, yValues);
+      let nStep = 100
+      let xValues = _.range(0, nStep)
+      this.model.resetSoln()
+      this.model.integrate(nStep)
+      let yValues = this.model.soln.y
+      this.chartWidget.updateDataset(0, xValues, yValues)
     },
     randomizeGraph() {
       for (let slider of this.sliders) {
-        slider.value = Math.random() * slider.max;
+        slider.value = Math.random() * slider.max
       }
-      this.changeGraph();
+      this.changeGraph()
     },
     async fileSelectedFunc(files) {
-      let response = await rpc.rpcUpload("publicUploadFiles", files);
-      this.uploadFiles.length = 0;
+      let response = await rpc.rpcUpload('publicUploadFiles', files)
+      this.uploadFiles.length = 0
       for (let f of response.result.files) {
         this.uploadFiles.push({
           name: f,
-          url: "http://localhost:3000" + f
-        });
+          url: 'http://localhost:3000' + f
+        })
       }
     },
     async setTask() {
-      let response = await rpc.rpcRun("publicPushTask");
-      console.log("setTask", response);
-      this.task = response.result.attr;
+      let response = await rpc.rpcRun('publicPushTask')
+      console.log('setTask', response)
+      this.task = response.result.attr
     }
   }
-};
+}
 </script>
