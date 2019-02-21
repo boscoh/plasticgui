@@ -14,4 +14,5 @@ from server import api, config
 api.app.run(
     threaded=True,
     debug=False,
+    host='localhost',
     port=int(config.PORT))

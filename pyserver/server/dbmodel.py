@@ -86,16 +86,16 @@ class UserDb(db.Model):
 
     def __init__(self, **kwargs):
         db.Model.__init__(self, **kwargs)
-        self.set_password(str(kwargs['password']))
+        self.set_password(kwargs['password'])
 
     # passwords are salted using werkzeug.security
     def set_password(self, password):
-        print('UserDb.set_password', str(password), generate_password_hash(str(password)))
-        self.password = generate_password_hash(str(password))
+        print('UserDb.set_password', password, generate_password_hash(password))
+        self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        print('UserDb.check_password', str(password), generate_password_hash(str(password)), self.password)
-        return check_password_hash(self.password, str(password))
+        print('UserDb.check_password', password, generate_password_hash(password), self.password)
+        return check_password_hash(self.password, password)
 
     # following methods are required by flask-login
     def get_id(self):
