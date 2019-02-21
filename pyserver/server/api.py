@@ -32,6 +32,7 @@ from flask import (
 )
 from flask_login import LoginManager, current_user
 from werkzeug.utils import secure_filename
+from flask_cors import CORS, cross_origin
 
 # assumes current directory is in Python paths
 from . import conn
@@ -40,6 +41,7 @@ from . import handler
 
 # Load app from singleton global module
 app = conn.app
+# CORS(app, expose_headers='Authorization')
 
 app.logger.setLevel(logging.DEBUG)
 
@@ -262,7 +264,7 @@ def index():
 def after_request(response):
     # Allow Cross-Origin-Resource-Sharing for hot-reload clients
     # http://reputablejournal.com/adventures-with-flask-cors.html#.WW6-INOGMm8
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+    response.headers.add("Access-Control-Allow-Origin", request.environ['HTTP_ORIGIN'])
     response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
     response.headers.add("Access-Control-Allow-Credentials", "true")
