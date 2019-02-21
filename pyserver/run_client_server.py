@@ -9,12 +9,13 @@ from server import config
 
 urlopen = urllib.request.urlopen
 
+
 def open_page_if_server():
     elapsed = 0
     is_server_not_running = True
     while is_server_not_running:
         try:
-            url = 'http://localhost:' + str(config.PORT)
+            url = "http://localhost:" + str(config.PORT)
             response_code = urlopen(url).getcode()
             if response_code < 400:
                 webbrowser.open(url)
@@ -23,6 +24,7 @@ def open_page_if_server():
             time.sleep(1)
             elapsed += 1
             print("Waiting", elapsed, "s for", url, " on server")
+
 
 # creates a thread to poll server before opening client
 threading.Thread(target=open_page_if_server).start()

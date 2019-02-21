@@ -20,9 +20,11 @@ from server.api import app
 
 import autoreload
 
+
 def run_app_in_twisted():
-    globalLogBeginner.beginLoggingTo([
-        FileLogObserver(sys.stdout, lambda _: formatEvent(_) + "\n")])
+    globalLogBeginner.beginLoggingTo(
+        [FileLogObserver(sys.stdout, lambda _: formatEvent(_) + "\n")]
+    )
 
     threadpool = ThreadPool(maxthreads=30)
     wsgi_app = WSGIResource(reactor, threadpool, app)
@@ -39,28 +41,28 @@ def run_app_in_twisted():
             Adds headers to disable caching of api calls
             """
             request.prepath = []
-            request.postpath = ['api'] + request.postpath[:]
+            request.postpath = ["api"] + request.postpath[:]
             r = self._wsgi.render(request)
             request.responseHeaders.setRawHeaders(
-                b'Cache-Control',
-                [b'no-cache', b'no-store', b'must-revalidate'])
-            request.responseHeaders.setRawHeaders(b'expires', [b'0'])
+                b"Cache-Control", [b"no-cache", b"no-store", b"must-revalidate"]
+            )
+            request.responseHeaders.setRawHeaders(b"expires", [b"0"])
             return r
 
     # web-client files served from here
-    base_resource = File('../client/dist')
+    base_resource = File("../client/dist")
 
     # api requests must go through /api
-    base_resource.putChild('api', ServerResource(wsgi_app))
+    base_resource.putChild("api", ServerResource(wsgi_app))
 
     # downloadable files go here
-    base_resource.putChild('file', File(config.SAVE_FOLDER))
+    base_resource.putChild("file", File(config.SAVE_FOLDER))
 
     site = Site(base_resource)
 
     # Start the threadpool now, shut it down when we're closing
     threadpool.start()
-    reactor.addSystemEventTrigger('before', 'shutdown', threadpool.stop)
+    reactor.addSystemEventTrigger("before", "shutdown", threadpool.stop)
 
     endpoint = serverFromString(reactor, "tcp:port=" + str(config.PORT))
     endpoint.listen(site)

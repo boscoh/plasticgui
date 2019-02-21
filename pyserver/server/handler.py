@@ -26,14 +26,13 @@ from . import dbmodel
 
 # User handlers
 
+
 def adminGetUsers():
-    return {
-        'users': map(dbmodel.parse_user, dbmodel.load_users())
-    }
+    return {"users": map(dbmodel.parse_user, dbmodel.load_users())}
 
 
 def publicRegisterUser(user_attr):
-    username = dbmodel.check_user_attr(user_attr)['username']
+    username = dbmodel.check_user_attr(user_attr)["username"]
 
     try:
         dbmodel.load_user(username=username)
@@ -43,10 +42,7 @@ def publicRegisterUser(user_attr):
         print("> handler.publicRegisterUser user_attr", user_attr)
 
         created_user_attr = dbmodel.create_user(user_attr)
-        return {
-            'success': True,
-            'user': created_user_attr
-        }
+        return {"success": True, "user": created_user_attr}
 
 
 def publicGetCurrentUser():
@@ -54,26 +50,20 @@ def publicGetCurrentUser():
 
 
 def loginUpdateUser(user_attr):
-    return {
-        'success': True,
-        'user': dbmodel.update_user_from_attr(user_attr)
-    }
+    return {"success": True, "user": dbmodel.update_user_from_attr(user_attr)}
 
 
 def publicLoginUser(user_attr):
     if not dbmodel.is_current_user_anonymous():
         print("> handler.publicLoginUser already logged-in")
-        return {
-            'success': True,
-            'user': dbmodel.parse_user(current_user)
-        }
+        return {"success": True, "user": dbmodel.parse_user(current_user)}
 
     user_attr = dbmodel.check_user_attr(user_attr)
     kwargs = {}
-    if user_attr['username']:
-        kwargs['username'] = user_attr['username']
-    if user_attr['email']:
-        kwargs['email'] = user_attr['email']
+    if user_attr["username"]:
+        kwargs["username"] = user_attr["username"]
+    if user_attr["email"]:
+        kwargs["email"] = user_attr["email"]
 
     print("> handler.publicLoginUser loading", kwargs, user_attr)
     try:
@@ -81,18 +71,15 @@ def publicLoginUser(user_attr):
     except:
         raise Exception("User not found")
 
-    if user.check_password(user_attr['password']):
+    if user.check_password(user_attr["password"]):
         login_user(user)
-        return {
-            'success': True,
-            'user': dbmodel.parse_user(user)
-        }
+        return {"success": True, "user": dbmodel.parse_user(user)}
 
     raise Exception("User/Password does not match")
 
 
 def adminDeleteUser(user_id):
-    username = dbmodel.delete_user(user_id)['username']
+    username = dbmodel.delete_user(user_id)["username"]
     print("> handler.admin_delete_user ", username)
     return adminGetUsers()
 
@@ -100,7 +87,7 @@ def adminDeleteUser(user_id):
 def publicLogoutUser():
     logout_user()
     session.clear()
-    return {'success': True}
+    return {"success": True}
 
 
 # model handlers
@@ -109,29 +96,26 @@ this_dir = os.path.dirname(__file__)
 
 
 def publicGetText():
-    return {
-        "text": "Example text from server",
-        "isRunning": True
-    }
+    return {"text": "Example text from server", "isRunning": True}
 
 
 def publicDownloadGetReadme():
     return {
         "filename": os.path.join(this_dir, "../../readme.md"),
-        "data": {"success": True}
+        "data": {"success": True},
     }
 
 
 def publicDownloadLogo():
     return {
         "filename": os.path.join(this_dir, "../../client/static/logo.png"),
-        "data": {"success": True}
+        "data": {"success": True},
     }
 
 
 def publicUploadFiles(files):
     timestamp = str(int(time.time()))
-    timestamp_dir = os.path.join(current_app.config['SAVE_FOLDER'], timestamp)
+    timestamp_dir = os.path.join(current_app.config["SAVE_FOLDER"], timestamp)
     if not os.path.isdir(timestamp_dir):
         os.makedirs(timestamp_dir)
     urls = []
@@ -139,11 +123,11 @@ def publicUploadFiles(files):
     for file in files:
         basename = os.path.basename(file)
         new_filename = os.path.join(timestamp_dir, basename)
-        urls.append(os.path.join('/file', timestamp, basename))
+        urls.append(os.path.join("/file", timestamp, basename))
         new_filenames.append(new_filename)
         os.rename(file, new_filename)
-    print('> handler.publicUploadFiles', new_filenames)
-    return {'files': urls}
+    print("> handler.publicUploadFiles", new_filenames)
+    return {"files": urls}
 
 
 def publicPushTask():
