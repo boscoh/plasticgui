@@ -19,6 +19,7 @@ import os
 import time
 import smtplib
 import uuid
+import datetime
 
 import six
 
@@ -32,7 +33,7 @@ from . import dbmodel
 
 
 def adminGetUsers():
-    return {"users": map(dbmodel.parse_user, dbmodel.load_users())}
+    return {"success": True, "users": map(dbmodel.parse_user, dbmodel.load_users())}
 
 
 def publicRegisterUser(user_attr):
@@ -50,7 +51,7 @@ def publicRegisterUser(user_attr):
 
 
 def publicGetCurrentUser():
-    return dbmodel.parse_user(current_user)
+    return {"success": True, "user": dbmodel.parse_user(current_user)}
 
 
 def loginUpdateUser(user_attr):
@@ -85,7 +86,7 @@ def publicLoginUser(user_attr):
 def adminDeleteUser(user_id):
     username = dbmodel.delete_user(user_id)["username"]
     print("> handler.admin_delete_user ", username)
-    return adminGetUsers()
+    return {"success": True, "users": adminGetUsers()}
 
 
 def publicLogoutUser():
@@ -104,14 +105,14 @@ def publicForgotPassword(email):
     smtp_port = current_app.config["SMTP_PORT"]
     sender_email = current_app.config["SMTP_EMAIL"]
     password = current_app.config["SMTP_PASSWORD"]
-    client_url = request.environ['HTTP_ORIGIN']
+    client_url = request.environ["HTTP_ORIGIN"]
 
     user.reset_password_token = token
-    # user.reset_password_expires_on = #date
+    expire_time = datetime.datetime.now() + datetime.timedelta(hours=5)
+    user.reset_password_expires_on = expire_time
     db_session = dbmodel.verify_db_session()
     db_session.add(user)
     db_session.commit()
-
 
     msg = (
         f"From: onewordname@yahoo.com\n"
@@ -125,8 +126,8 @@ def publicForgotPassword(email):
         + f"\n"
         + f"{client_url}/#/reset-password/{token}\n"
         + f"\n"
-        + f'If you did not request this, please ignore this email'
-        + f'and your password will remain unchanged.\n'
+        + f"If you did not request this, please ignore this email"
+        + f"and your password will remain unchanged.\n"
     )
 
     # Try to log in to server and send email
@@ -136,10 +137,36 @@ def publicForgotPassword(email):
         server.login(sender_email, password)
         server.sendmail(sender_email, email, msg)
         print(f"publicForgotPassword success")
-    except Exception as e:
-        print(f"publicForgotPassword fail email send {e}")
-    finally:
         server.quit()
+        return {
+            "success": True,
+            "message": "An e-mail has been sent to "
+            + email
+            + " with further instructions.",
+        }
+    except Exception as e:
+        raise Exception(f"publicForgotPassword fail email send {e}")
+
+
+def publicResetPassword(token, password):
+    user = dbmodel.load_user(reset_password_token=token)
+    is_found = False
+    if user:
+        if datetime.datetime.now() <= user.reset_password_expires_on:
+            is_found = True
+    if not is_found:
+        raise Exception("Password reset token is invalid or has expired.")
+
+    try:
+        user.reset_password_expires_on = None
+        user.reset_password_token = None
+        user.set_password(password)
+        db_session = dbmodel.verify_db_session()
+        db_session.add(user)
+        db_session.commit()
+        return {"success": True}
+    except Exception as e:
+        raise Exception(f"Update failure {e}")
 
 
 # model handlers
@@ -156,7 +183,6 @@ def publicDownloadGetReadme():
         "filename": os.path.join(this_dir, "../../readme.md"),
         "data": {"success": True},
     }
-
 
 def publicDownloadLogo():
     return {

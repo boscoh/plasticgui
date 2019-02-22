@@ -88,6 +88,7 @@ class UserDb(db.Model):
     password = db.Column(db.String(255))
     is_admin = db.Column(db.Boolean, default=False)
     reset_password_token = db.Column(db.String(255))
+    reset_password_expires_on = db.Column(db.DateTime)
     customs = db.relationship("CustomDb", backref="user", lazy="dynamic")
 
     def __init__(self, **kwargs):
@@ -284,12 +285,16 @@ def make_custom_query(user_id=None, custom_type="project", db_session=None, **kw
 
 
 def load_custom_attr(custom_id, custom_type="project", db_session=None):
-    query = make_custom_query(id=custom_id, custom_type=custom_type, db_session=db_session)
+    query = make_custom_query(
+        id=custom_id, custom_type=custom_type, db_session=db_session
+    )
     return query.one().attr
 
 
 def load_custom_records(user_id=None, custom_type="project", db_session=None):
-    query = make_custom_query(user_id=user_id, custom_type=custom_type, db_session=db_session)
+    query = make_custom_query(
+        user_id=user_id, custom_type=custom_type, db_session=db_session
+    )
     return query.all()
 
 
@@ -310,7 +315,9 @@ def create_custom_id(db_session=None, **kwargs):
 
 def save_custom(custom_id, custom_type, byte_str, attr, db_session=None):
     db_session = verify_db_session(db_session)
-    record = make_custom_query(id=custom_id, custom_type=custom_type, db_session=db_session).one()
+    record = make_custom_query(
+        id=custom_id, custom_type=custom_type, db_session=db_session
+    ).one()
     record.blob = byte_str
     attr = copy.deepcopy(attr)
     attr["userId"] = str(record.user_id)
@@ -326,7 +333,9 @@ def get_user_id_of_custom(custom_id, db_session=None):
 
 
 def load_custom_byte_str(obj_id, custom_type, db_session=None):
-    record = make_custom_query(id=obj_id, custom_type=custom_type, db_session=db_session).one()
+    record = make_custom_query(
+        id=obj_id, custom_type=custom_type, db_session=db_session
+    ).one()
     return record.blob
 
 
