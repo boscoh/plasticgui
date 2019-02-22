@@ -13,7 +13,6 @@ To test with only the flask app:
 
 from __future__ import print_function
 import os
-import sys
 import logging
 from functools import wraps
 import traceback
@@ -32,7 +31,6 @@ from flask import (
 )
 from flask_login import LoginManager, current_user
 from werkzeug.utils import secure_filename
-from flask_cors import CORS, cross_origin
 
 # assumes current directory is in Python paths
 from . import conn
@@ -41,7 +39,6 @@ from . import handler
 
 # Load app from singleton global module
 app = conn.app
-# CORS(app, expose_headers='Authorization')
 
 app.logger.setLevel(logging.DEBUG)
 

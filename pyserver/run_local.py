@@ -12,4 +12,4 @@ and serves static files reasonably efficiently.
 from __future__ import print_function
 from server import api, config
 
-api.app.run(threaded=True, debug=False, host=config.IP, port=int(config.PORT))
+api.app.run(threaded=True, debug=False, host=config.HOST, port=int(config.PORT))

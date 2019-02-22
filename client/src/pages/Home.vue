@@ -2,7 +2,7 @@
   <v-container
     style="
       margin-top: 10px;
-      height: calc(100vh - 48px);
+      height: calc(100vh - 58px);
       overflow: auto"
     fluid
     grid-list-xl>

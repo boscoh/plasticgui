@@ -7,6 +7,8 @@ import arrow
 import uuid
 import json
 
+import six
+
 from flask import current_app
 from flask_login import current_user
 
@@ -85,7 +87,8 @@ class UserDb(db.Model):
     email = db.Column(db.String(200))
     password = db.Column(db.String(255))
     is_admin = db.Column(db.Boolean, default=False)
-    objects = db.relationship("ObjectDb", backref="user", lazy="dynamic")
+    reset_password_token = db.Column(db.String(255))
+    customs = db.relationship("CustomDb", backref="user", lazy="dynamic")
 
     def __init__(self, **kwargs):
         db.Model.__init__(self, **kwargs)
@@ -93,16 +96,9 @@ class UserDb(db.Model):
 
     # passwords are salted using werkzeug.security
     def set_password(self, password):
-        print("UserDb.set_password", password, generate_password_hash(password))
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        print(
-            "UserDb.check_password",
-            password,
-            generate_password_hash(password),
-            self.password,
-        )
         return check_password_hash(self.password, password)
 
     # following methods are required by flask-login
@@ -119,15 +115,15 @@ class UserDb(db.Model):
         return True
 
 
-class ObjectDb(db.Model):
+class CustomDb(db.Model):
 
-    __tablename__ = "objects"
+    __tablename__ = "custom"
 
     id = db.Column(
         GUID(), default=uuid.uuid4, nullable=False, unique=True, primary_key=True
     )
     user_id = db.Column(GUID(True), db.ForeignKey("users.id"))
-    obj_type = db.Column(db.Text, default=None)
+    custom_type = db.Column(db.Text, default=None)
     attr = db.Column(JSONEncodedDict)
     blob = deferred(db.Column(db.LargeBinary))
 
@@ -250,7 +246,7 @@ def delete_user(user_id, db_session=None):
     db_session = verify_db_session(db_session)
     user = load_user(id=user_id)
     user_attr = parse_user(user)
-    query = make_obj_query(user_id=user_id, db_session=db_session)
+    query = make_custom_query(user_id=user_id, db_session=db_session)
     for record in query.all():
         db_session.delete(record)
     db_session.delete(user)
@@ -277,65 +273,65 @@ def get_user_server_dir(dirpath, user_id=None):
 # OBJECT functions
 
 
-def make_obj_query(user_id=None, obj_type="project", db_session=None, **kwargs):
+def make_custom_query(user_id=None, custom_type="project", db_session=None, **kwargs):
     db_session = verify_db_session(db_session)
     kwargs = filter_dict_for_none(kwargs)
     if user_id is not None:
         kwargs["user_id"] = user_id
-    if obj_type is not None:
-        kwargs["obj_type"] = obj_type
-    return db_session.query(ObjectDb).filter_by(**kwargs)
+    if custom_type is not None:
+        kwargs["custom_type"] = custom_type
+    return db_session.query(CustomDb).filter_by(**kwargs)
 
 
-def load_obj_attr(id=id, obj_type="project", db_session=None):
-    query = make_obj_query(id=id, obj_type=obj_type, db_session=db_session)
+def load_custom_attr(custom_id, custom_type="project", db_session=None):
+    query = make_custom_query(id=custom_id, custom_type=custom_type, db_session=db_session)
     return query.one().attr
 
 
-def load_obj_records(user_id=None, obj_type="project", db_session=None):
-    query = make_obj_query(user_id=user_id, obj_type=obj_type, db_session=db_session)
+def load_custom_records(user_id=None, custom_type="project", db_session=None):
+    query = make_custom_query(user_id=user_id, custom_type=custom_type, db_session=db_session)
     return query.all()
 
 
-def load_obj_attr_list(user_id=None, obj_type="project", db_session=None):
-    records = load_obj_records(
-        user_id=user_id, obj_type=obj_type, db_session=db_session
+def load_custom_attr_list(user_id=None, custom_type="project", db_session=None):
+    records = load_custom_records(
+        user_id=user_id, custom_type=custom_type, db_session=db_session
     )
     return [record.attr for record in records]
 
 
-def create_obj_id(db_session=None, **kwargs):
+def create_custom_id(db_session=None, **kwargs):
     db_session = verify_db_session(db_session)
-    record = ObjectDb(**kwargs)
+    record = CustomDb(**kwargs)
     db_session.add(record)
     db_session.commit()
     return record.id
 
 
-def save_object(id, obj_type, obj_str, obj_attr, db_session=None):
+def save_custom(custom_id, custom_type, byte_str, attr, db_session=None):
     db_session = verify_db_session(db_session)
-    record = make_obj_query(id=id, obj_type=obj_type, db_session=db_session).one()
-    record.blob = obj_str
-    obj_attr = copy.deepcopy(obj_attr)
-    obj_attr["userId"] = str(record.user_id)
-    obj_attr["modifiedTime"] = repr(arrow.now().format())
-    record.attr = obj_attr
+    record = make_custom_query(id=custom_id, custom_type=custom_type, db_session=db_session).one()
+    record.blob = byte_str
+    attr = copy.deepcopy(attr)
+    attr["userId"] = str(record.user_id)
+    attr["modifiedTime"] = repr(arrow.now().format())
+    record.attr = attr
     db_session.add(record)
     db_session.commit()
 
 
-def get_user_id(obj_id, db_session=None):
-    record = make_obj_query(id=obj_id, db_session=db_session).one()
+def get_user_id_of_custom(custom_id, db_session=None):
+    record = make_custom_query(id=custom_id, db_session=db_session).one()
     return record.user_id
 
 
-def load_obj_str(obj_id, obj_type, db_session=None):
-    record = make_obj_query(id=obj_id, obj_type=obj_type, db_session=db_session).one()
+def load_custom_byte_str(obj_id, custom_type, db_session=None):
+    record = make_custom_query(id=obj_id, custom_type=custom_type, db_session=db_session).one()
     return record.blob
 
 
-def delete_obj(obj_id, db_session=None):
+def delete_custom(custom_id, db_session=None):
     db_session = verify_db_session(db_session)
-    record = make_obj_query(id=obj_id, db_session=db_session).one()
+    record = make_custom_query(id=custom_id, db_session=db_session).one()
     db_session.delete(record)
     db_session.commit()

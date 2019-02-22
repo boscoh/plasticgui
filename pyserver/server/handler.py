@@ -17,9 +17,13 @@ Python data structures.
 from __future__ import print_function
 import os
 import time
+import smtplib
+import uuid
 
-from flask import session
-from flask_login import current_app, current_user, login_user, logout_user
+import six
+
+from flask import session, current_app, request
+from flask_login import current_user, login_user, logout_user
 
 from . import dbmodel
 
@@ -90,6 +94,54 @@ def publicLogoutUser():
     return {"success": True}
 
 
+def publicForgotPassword(email):
+    user = dbmodel.load_user(email=email)
+    if not user:
+        raise Exception("No user found with email: " + email)
+
+    token = uuid.uuid4().hex
+    smtp_server = current_app.config["SMTP_SERVER"]
+    smtp_port = current_app.config["SMTP_PORT"]
+    sender_email = current_app.config["SMTP_EMAIL"]
+    password = current_app.config["SMTP_PASSWORD"]
+    client_url = request.environ['HTTP_ORIGIN']
+
+    user.reset_password_token = token
+    # user.reset_password_expires_on = #date
+    db_session = dbmodel.verify_db_session()
+    db_session.add(user)
+    db_session.commit()
+
+
+    msg = (
+        f"From: onewordname@yahoo.com\n"
+        + f"To: {email}\n"
+        + f"Subject: Password Reset\n"
+        + f"You are receiving this because you (or someone else) "
+        + f"have requested the reset of the password for your account.\n"
+        + f"\n"
+        + f"Please click on the following link, or paste this "
+        + f"into your browser to complete the process:\n"
+        + f"\n"
+        + f"{client_url}/#/reset-password/{token}\n"
+        + f"\n"
+        + f'If you did not request this, please ignore this email'
+        + f'and your password will remain unchanged.\n'
+    )
+
+    # Try to log in to server and send email
+    try:
+        print(f"publicForgotPassword {email}\n----\n{msg}\n---")
+        server = smtplib.SMTP_SSL(smtp_server, smtp_port)
+        server.login(sender_email, password)
+        server.sendmail(sender_email, email, msg)
+        print(f"publicForgotPassword success")
+    except Exception as e:
+        print(f"publicForgotPassword fail email send {e}")
+    finally:
+        server.quit()
+
+
 # model handlers
 
 this_dir = os.path.dirname(__file__)
@@ -131,11 +183,11 @@ def publicUploadFiles(files):
 
 
 def publicPushTask():
-    records = dbmodel.load_obj_records(obj_type="task")
+    records = dbmodel.load_custom_records(custom_type="task")
     if len(records) == 0:
-        dbmodel.create_obj_id(attr={"n": 1}, obj_type="task")
-        records = dbmodel.load_obj_records(obj_type="task")
+        dbmodel.create_custom_id(attr={"n": 1}, custom_type="task")
+        records = dbmodel.load_custom_records(custom_type="task")
     record = records[0]
     record.attr["n"] += 1
-    dbmodel.save_object(record.id, record.obj_type, "", record.attr)
+    dbmodel.save_custom(record.id, record.custom_type, six.b(""), record.attr)
     return {"attr": record.attr}
