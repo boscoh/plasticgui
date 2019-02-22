@@ -126,28 +126,28 @@ def publicForgotPassword(email):
     db_session.commit()
 
     msg = (
-        f"From: onewordname@yahoo.com\n"
-        + f"To: {email}\n"
-        + f"Subject: Password Reset\n"
-        + f"You are receiving this because you (or someone else) "
-        + f"have requested the reset of the password for your account.\n"
-        + f"\n"
-        + f"Please click on the following link, or paste this "
-        + f"into your browser to complete the process:\n"
-        + f"\n"
-        + f"{client_url}/#/reset-password/{token}\n"
-        + f"\n"
-        + f"If you did not request this, please ignore this email"
-        + f"and your password will remain unchanged.\n"
+        "From: onewordname@yahoo.com\n"
+        + "To: %s\n" % email
+        + "Subject: Password Reset\n"
+        + "You are receiving this because you (or someone else) "
+        + "have requested the reset of the password for your account.\n"
+        + "\n"
+        + "Please click on the following link, or paste this "
+        + "into your browser to complete the process:\n"
+        + "\n"
+        + "%s/#/reset-password/%s\n" % (client_url, token)
+        + "\n"
+        + "If you did not request this, please ignore this email"
+        + "and your password will remain unchanged.\n"
     )
 
     # Try to log in to server and send email
     try:
-        print(f"publicForgotPassword {email}\n----\n{msg}\n---")
+        print("publicForgotPassword %s\n----\n%s\n---" % (email, msg))
         server = smtplib.SMTP_SSL(smtp_server, smtp_port)
         server.login(sender_email, password)
         server.sendmail(sender_email, email, msg)
-        print(f"publicForgotPassword success")
+        print("publicForgotPassword success")
         server.quit()
         return {
             "success": True,
@@ -157,7 +157,7 @@ def publicForgotPassword(email):
                 ' with further instructions.',
         }
     except Exception as e:
-        raise Exception(f"publicForgotPassword fail email send {e}")
+        raise Exception("publicForgotPassword fail email send %s" % e)
 
 def publicResetPassword(token, password):
     user = dbmodel.load_user(reset_password_token=token)
@@ -180,7 +180,7 @@ def publicResetPassword(token, password):
             "success": True
         }
     except Exception as e:
-        raise Exception(f"Update failure {e}")
+        raise Exception("Update failure %s" % e)
 
 
 # model handlers
