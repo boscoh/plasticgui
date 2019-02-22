@@ -33,14 +33,25 @@ from . import dbmodel
 
 
 def adminGetUsers():
-    return {"success": True, "users": map(dbmodel.parse_user, dbmodel.load_users())}
+    return {"users": list(map(dbmodel.parse_user, dbmodel.load_users()))}
 
 
 def publicRegisterUser(user_attr):
-    username = dbmodel.check_user_attr(user_attr)["username"]
+    user_attr = dbmodel.check_user_attr(user_attr)
+    print('publicRegisterUser', user_attr)
+    errors = []
+    if not user_attr.get("name"):
+        errors.append('no user name')
+    if not user_attr.get("email"):
+        errors.append('no email')
+    if not user_attr.get("password"):
+        errors.append('no Password')
+
+    if len(errors) > 0:
+        raise Exception(", ".join(errors))
 
     try:
-        dbmodel.load_user(username=username)
+        dbmodel.load_user(name=user_attr["name"])
         raise Exception("User already exists")
     except:
 
@@ -51,7 +62,7 @@ def publicRegisterUser(user_attr):
 
 
 def publicGetCurrentUser():
-    return {"success": True, "user": dbmodel.parse_user(current_user)}
+    return dbmodel.parse_user(current_user)
 
 
 def loginUpdateUser(user_attr):
@@ -86,7 +97,7 @@ def publicLoginUser(user_attr):
 def adminDeleteUser(user_id):
     username = dbmodel.delete_user(user_id)["username"]
     print("> handler.admin_delete_user ", username)
-    return {"success": True, "users": adminGetUsers()}
+    return adminGetUsers()
 
 
 def publicLogoutUser():
@@ -140,22 +151,23 @@ def publicForgotPassword(email):
         server.quit()
         return {
             "success": True,
-            "message": "An e-mail has been sent to "
-            + email
-            + " with further instructions.",
+            "message":
+                'An e-mail has been sent to ' +
+                email +
+                ' with further instructions.',
         }
     except Exception as e:
         raise Exception(f"publicForgotPassword fail email send {e}")
 
-
 def publicResetPassword(token, password):
     user = dbmodel.load_user(reset_password_token=token)
     is_found = False
-    if user:
-        if datetime.datetime.now() <= user.reset_password_expires_on:
+    if not user:
+        now = datetime.datetime.now()
+        if now < user.reset_password_expires_on:
             is_found = True
     if not is_found:
-        raise Exception("Password reset token is invalid or has expired.")
+        raise Exception('Password reset token is invalid or has expired.')
 
     try:
         user.reset_password_expires_on = None
@@ -164,7 +176,9 @@ def publicResetPassword(token, password):
         db_session = dbmodel.verify_db_session()
         db_session.add(user)
         db_session.commit()
-        return {"success": True}
+        return {
+            "success": True
+        }
     except Exception as e:
         raise Exception(f"Update failure {e}")
 
@@ -183,6 +197,7 @@ def publicDownloadGetReadme():
         "filename": os.path.join(this_dir, "../../readme.md"),
         "data": {"success": True},
     }
+
 
 def publicDownloadLogo():
     return {
