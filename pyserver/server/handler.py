@@ -51,14 +51,16 @@ def publicRegisterUser(user_attr):
         raise Exception(", ".join(errors))
 
     try:
-        dbmodel.load_user(name=user_attr["name"])
-        raise Exception("User already exists")
+        user = dbmodel.load_user(email=user_attr["email"])
     except:
+        user = None
+    if user:
+        raise Exception("User already exists")
 
-        print("> handler.publicRegisterUser user_attr", user_attr)
+    print("> handler.publicRegisterUser user_attr", user_attr)
 
-        created_user_attr = dbmodel.create_user(user_attr)
-        return {"success": True, "user": created_user_attr}
+    created_user_attr = dbmodel.create_user(user_attr)
+    return {"success": True, "user": created_user_attr}
 
 
 def publicGetCurrentUser():
@@ -75,15 +77,10 @@ def publicLoginUser(user_attr):
         return {"success": True, "user": dbmodel.parse_user(current_user)}
 
     user_attr = dbmodel.check_user_attr(user_attr)
-    kwargs = {}
-    if user_attr["username"]:
-        kwargs["username"] = user_attr["username"]
-    if user_attr["email"]:
-        kwargs["email"] = user_attr["email"]
 
-    print("> handler.publicLoginUser loading", kwargs, user_attr)
+    print("> handler.publicLoginUser loading", user_attr)
     try:
-        user = dbmodel.load_user(**kwargs)
+        user = dbmodel.load_user(email=user_attr["email"])
     except:
         raise Exception("User not found")
 
