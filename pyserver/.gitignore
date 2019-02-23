@@ -4,4 +4,4 @@ Pipfile.lock
 __pycache__
 server/files
 server/database.sqlite
-src/config.py
+server/config.py
