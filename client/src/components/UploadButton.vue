@@ -1,11 +1,11 @@
 <template>
-  <div class="btn btn-primary jbtn-file">
+  <v-btn class="jbtn-file">
     {{ title }}
     <input
       multiple
       type="file"
       @change="fileSelected">
-  </div>
+  </v-btn>
 </template>
 
 <script>

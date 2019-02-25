@@ -5,3 +5,7 @@ STATIC_FOLDER = "../../client/dist/static"
 SQLALCHEMY_TRACK_MODIFICATIONS = "False"
 PORT = "3000"
 IP = "localhost"
+SMTP_SERVER = "smtp.example.com"
+SMTP_PORT = 465
+SMTP_EMAIL = "example@example.com"
+SMTP_PASSWORD = "YourPassword"
