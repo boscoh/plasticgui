@@ -142,7 +142,10 @@ def publicForgotPassword(email):
 
     # Try to log in to server and send email
     try:
-        print("> handler.publicForgotPassword email=%s msg=\n====\n%s\n====" % (email, msg))
+        print(
+            "> handler.publicForgotPassword email=%s msg=\n====\n%s\n===="
+            % (email, msg)
+        )
         server = smtplib.SMTP_SSL(smtp_server, smtp_port)
         server.login(sender_email, password)
         server.sendmail(sender_email, email, msg)

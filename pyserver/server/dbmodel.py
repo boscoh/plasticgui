@@ -211,7 +211,7 @@ def check_user_attr(user_attr):
         "name": str(user_attr.get("name", "")),
         "username": str(user_attr.get("name", "")),
         "password": str(check_sha224_hash(user_attr.get("password"))),
-        "id": str(user_attr.get("id", ""))
+        "id": str(user_attr.get("id", "")),
     }
 
 
@@ -239,7 +239,10 @@ def make_user_query(db_session=None, **kwargs):
     db_session = verify_db_session(db_session)
     kwargs = filter_dict_for_none(kwargs)
     query = db_session.query(UserDb).filter_by(**kwargs)
-    print("> dbmodel.maker_user_query count=%s, query=\n====\n%s\n====" % (query.count(), query))
+    print(
+        "> dbmodel.maker_user_query count=%s, query=\n====\n%s\n===="
+        % (query.count(), query)
+    )
     return query
 
 

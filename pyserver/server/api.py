@@ -264,7 +264,7 @@ def after_request(response):
     if "HTTP_ORIGIN" in request.environ:
         origin = request.environ["HTTP_ORIGIN"]
     else:
-        origin = '*'
+        origin = "*"
     response.headers.add("Access-Control-Allow-Origin", origin)
     response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
