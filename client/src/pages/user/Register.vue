@@ -104,6 +104,8 @@ export default {
   },
   methods: {
     async submit() {
+      this.error = ''
+
       let payload = {
         name: this.$data.name,
         email: this.$data.email,

@@ -31,6 +31,11 @@
               type="submit"
               class="v-accent">Send password reset email</v-btn>
 
+            <v-progress-linear
+              v-if="isSending"
+              :indeterminate="true">
+            </v-progress-linear>
+
             <div
               v-if="error"
               style="color: red">
@@ -59,7 +64,8 @@ export default {
       title: config.title,
       passwordHidden: true,
       rawPassword: '',
-      error: ''
+      error: '',
+      isSending: false
     }
   },
   computed: {
@@ -76,8 +82,11 @@ export default {
     async submit() {
       let payload = this.user.email
       console.log('> ForgotPassword.submit', payload)
+      this.isSending = true
+      this.error = ''
       let response = await auth.forgotPassword(payload)
       console.log('> ForgotPassword.submit response', response)
+      this.isSending = false
 
       if (response.result) {
         this.$router.push('/')

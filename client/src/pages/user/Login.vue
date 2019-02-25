@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     async submit() {
+      this.error = ''
       let payload = {
         email: this.user.email,
         rawPassword: this.rawPassword
