@@ -15,13 +15,14 @@ Python data structures.
 """
 
 from __future__ import print_function
+from __future__ import unicode_literals
 import os
 import time
 import smtplib
 import uuid
 import datetime
-
 import six
+import pprint
 
 from flask import session, current_app, request
 from flask_login import current_user, login_user, logout_user
@@ -38,14 +39,15 @@ def adminGetUsers():
 
 def publicRegisterUser(user_attr):
     user_attr = dbmodel.check_user_attr(user_attr)
-    print('publicRegisterUser', user_attr)
+    print("publicRegisterUser\n" + pprint.pformat(user_attr, indent=2))
+
     errors = []
     if not user_attr.get("name"):
-        errors.append('no user name')
+        errors.append("no user name")
     if not user_attr.get("email"):
-        errors.append('no email')
+        errors.append("no email")
     if not user_attr.get("password"):
-        errors.append('no Password')
+        errors.append("no Password")
 
     if len(errors) > 0:
         raise Exception(", ".join(errors))
@@ -57,8 +59,6 @@ def publicRegisterUser(user_attr):
     if user:
         raise Exception("User already exists")
 
-    print("> handler.publicRegisterUser user_attr", user_attr)
-
     created_user_attr = dbmodel.create_user(user_attr)
     return {"success": True, "user": created_user_attr}
 
@@ -68,6 +68,7 @@ def publicGetCurrentUser():
 
 
 def loginUpdateUser(user_attr):
+    user_attr = dbmodel.check_user_attr(user_attr)
     return {"success": True, "user": dbmodel.update_user_from_attr(user_attr)}
 
 
@@ -78,7 +79,7 @@ def publicLoginUser(user_attr):
 
     user_attr = dbmodel.check_user_attr(user_attr)
 
-    print("> handler.publicLoginUser loading", user_attr)
+    print("> handler.publicLoginUser\n" + pprint.pformat(user_attr, indent=2))
     try:
         user = dbmodel.load_user(email=user_attr["email"])
     except:
@@ -104,11 +105,12 @@ def publicLogoutUser():
 
 
 def publicForgotPassword(email):
+    email = str(email)
     user = dbmodel.load_user(email=email)
     if not user:
         raise Exception("No user found with email: " + email)
 
-    token = uuid.uuid4().hex
+    token = str(uuid.uuid4().hex)
     smtp_server = current_app.config["SMTP_SERVER"]
     smtp_port = current_app.config["SMTP_PORT"]
     sender_email = current_app.config["SMTP_EMAIL"]
@@ -140,31 +142,36 @@ def publicForgotPassword(email):
 
     # Try to log in to server and send email
     try:
-        print("publicForgotPassword %s\n----\n%s\n---" % (email, msg))
+        print("> handler.publicForgotPassword %s\n----\n%s\n---" % (email, msg))
         server = smtplib.SMTP_SSL(smtp_server, smtp_port)
         server.login(sender_email, password)
         server.sendmail(sender_email, email, msg)
-        print("publicForgotPassword success")
+        print("> handler.publicForgotPassword success")
         server.quit()
         return {
             "success": True,
-            "message":
-                'An e-mail has been sent to ' +
-                email +
-                ' with further instructions.',
+            "message": "An e-mail has been sent to "
+            + email
+            + " with further instructions.",
         }
     except Exception as e:
         raise Exception("publicForgotPassword fail email send %s" % e)
 
+
 def publicResetPassword(token, password):
+    token = str(token)
+    password = str(password)
     user = dbmodel.load_user(reset_password_token=token)
     is_found = False
-    if not user:
-        now = datetime.datetime.now()
+    now = datetime.datetime.now()
+    if user:
+        print("> handler.publicForgotPassword times")
+        print("  now:", now)
+        print("  expire:", user.reset_password_expires_on)
         if now < user.reset_password_expires_on:
             is_found = True
     if not is_found:
-        raise Exception('Password reset token is invalid or has expired.')
+        raise Exception("Password reset token is invalid or has expired.")
 
     try:
         user.reset_password_expires_on = None
@@ -173,9 +180,7 @@ def publicResetPassword(token, password):
         db_session = dbmodel.verify_db_session()
         db_session.add(user)
         db_session.commit()
-        return {
-            "success": True
-        }
+        return {"success": True}
     except Exception as e:
         raise Exception("Update failure %s" % e)
 

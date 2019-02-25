@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import str
 
 import copy
@@ -6,6 +7,7 @@ import os
 import arrow
 import uuid
 import json
+import pprint
 
 from flask import current_app
 from flask_login import current_user
@@ -95,9 +97,21 @@ class UserDb(db.Model):
 
     # passwords are salted using werkzeug.security
     def set_password(self, password):
-        self.password = generate_password_hash(password)
+        password = str(password)
+        hash = generate_password_hash(password)
+        self.password = hash
+        print("> UserDb.set_password")
+        print("  password: %s (%s)" % (password, type(password)))
+        print("  hash: %s (%s)" % (hash, type(hash)))
+        print("  self.password: %s (%s)" % (self.password, type(self.password)))
 
     def check_password(self, password):
+        password = str(password)
+        print("> UserDb.check_password")
+        print("  password: %s (%s)" % (password, type(password)))
+        print("  self.password: %s (%s)" % (self.password, type(self.password)))
+        new_hash = generate_password_hash(password)
+        print("  generate_password_hash: %s (%s)" % (new_hash, type(new_hash)))
         return check_password_hash(self.password, password)
 
     # following methods are required by flask-login
@@ -172,7 +186,6 @@ def parse_user(user):
     return {
         "id": user.id,
         "name": user.name,
-        "username": user.username,
         "email": user.email,
         "isAdmin": user.is_admin,
     }
@@ -194,10 +207,10 @@ def check_sha224_hash(password):
 
 def check_user_attr(user_attr):
     return {
-        "email": check_valid_email(user_attr.get("email", None)),
-        "name": user_attr.get("name", ""),
-        "username": user_attr.get("username", ""),
-        "password": check_sha224_hash(user_attr.get("password")),
+        "email": str(check_valid_email(user_attr.get("email", None))),
+        "name": str(user_attr.get("name", "")),
+        "username": str(user_attr.get("name", "")),
+        "password": str(check_sha224_hash(user_attr.get("password"))),
     }
 
 
@@ -206,16 +219,27 @@ def create_user(user_attr, db_session=None):
     for key in user_attr:
         user_attr[key] = str(user_attr[key])
     user = UserDb(**user_attr)
+    print("> dbmodel.create_user")
+    print("{")
+    for key, value in user_attr.items():
+        print("  '%s': '%s' (%s)," % (key, value, type(value)))
+    print("}")
     db_session.add(user)
-    print("> dbmodel.create_user", user_attr)
     db_session.commit()
     return parse_user(user)
 
 
 def make_user_query(db_session=None, **kwargs):
+    print("> dbmodel.make_user_query")
+    print("{")
+    for key, value in kwargs.items():
+        print("  '%s': '%s' (%s)," % (key, value, type(value)))
+    print("}")
     db_session = verify_db_session(db_session)
     kwargs = filter_dict_for_none(kwargs)
-    return db_session.query(UserDb).filter_by(**kwargs)
+    query = db_session.query(UserDb).filter_by(**kwargs)
+    print("> dbmodel.maker_user_query query (count = %s) =\n>>>>\n%s\n<<<<" % (query.count(), query))
+    return query
 
 
 def load_user(db_session=None, **kwargs):

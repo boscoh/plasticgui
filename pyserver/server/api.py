@@ -168,7 +168,7 @@ def send_downloadable_file():
 
         response.status_code = 201
 
-        print("> send_downloadable_files", result)
+        print("> api.send_downloadable_files", result)
         response.headers["data"] = json.dumps(
             {"result": result["data"], "jsonrpc": "2.0"}
         )
