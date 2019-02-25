@@ -1,17 +1,12 @@
 <template>
   <v-container
-    style="
-      margin-top: 10px;
-      height: calc(100vh - 58px);
-      overflow: auto"
     fluid
     grid-list-xl>
 
-    <v-layout
-      row
-      wrap>
-      <v-flex xs12>
-        <h2 class="display-2 pt-4 pb-3">
+    <v-layout>
+      <v-flex>
+        <h2
+          class="display-2 pt-4 pb-3">
           Example Widgets
         </h2>
       </v-flex>

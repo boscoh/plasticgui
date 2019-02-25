@@ -1,5 +1,5 @@
 <template>
-  <v-container style="padding-top: 6em">
+  <v-container>
     <v-flex
       xs8 
       offset-xs2
@@ -7,7 +7,7 @@
       offset-md4
       lg4
       offset-lg4>
-      <v-card>
+      <v-card class="mt-5">
 
         <v-card-title
           primary-title

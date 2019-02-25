@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    style="
-      margin-top: 10px;
-      height: calc(100vh - 58px);
-      overflow: auto">
+  <v-container>
     <v-layout
       justify-center
       row>
