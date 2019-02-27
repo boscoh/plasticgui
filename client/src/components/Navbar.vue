@@ -20,20 +20,17 @@
 
     <v-toolbar-items>
       <v-btn 
-        id="tab-home"
         flat
         to="/"
         router>Home
       </v-btn>
       <v-btn 
         v-show="user.authenticated"
-        id="tab-search"
         flat
         to="/private"
         router>Private
       </v-btn>
       <v-btn 
-        id="tab-about"
         flat
         to="/about"
         router>About
@@ -85,7 +82,6 @@ import auth from '../modules/auth'
 import config from '../config'
 
 export default {
-  name: 'Navbar',
   data() {
     return {
       title: config.title,

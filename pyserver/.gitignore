@@ -5,3 +5,4 @@ __pycache__
 server/files
 server/database.sqlite
 server/config.py
+.idea

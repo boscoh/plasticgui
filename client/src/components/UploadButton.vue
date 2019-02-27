@@ -10,7 +10,6 @@
 
 <script>
 export default {
-  name: 'UploadButton',
   props: {
     selectedCallback: {
       type: Function,
@@ -41,7 +40,6 @@ export default {
   position: relative;
   overflow: hidden;
 }
-
 .jbtn-file input[type='file'] {
   position: absolute;
   top: 0;
