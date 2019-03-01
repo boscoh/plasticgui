@@ -2,43 +2,46 @@
   <v-container>
     <v-layout
       justify-center
-      row>
+      row
+    >
       <v-flex
         xs8
         md4
-        lg4>
+        lg4
+      >
         <v-card class="mt-5">
-
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             {{ title }}
           </v-card-title>
-
 
           <v-card-text>
             <form
               novalidate
               class="login-screen"
-              @submit.prevent="submit">
-
+              @submit.prevent="submit"
+            >
               <v-text-field
-                v-validate="'required'"
                 v-model="name"
+                v-validate="'required'"
                 :error-messages="errors.collect('name')"
                 label="User name"
-                data-vv-name="name"></v-text-field>
+                data-vv-name="name"
+              ></v-text-field>
 
               <v-text-field
-                v-validate="'email'"
                 v-model="email"
+                v-validate="'email'"
                 :error-messages="errors.collect('email')"
                 label="E-mail address"
-                data-vv-name="email"></v-text-field>
+                data-vv-name="email"
+              ></v-text-field>
 
               <v-text-field
-                v-validate="'required|min:6'"
                 v-model="rawPassword"
+                v-validate="'required|min:6'"
                 :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
                 :append-icon-cb="() => (passwordHidden = !passwordHidden)"
                 :type="passwordHidden ? 'password' : 'text'"
@@ -46,33 +49,41 @@
                 hint="At least 6 characters"
                 counter
                 label="New Password"
-                data-vv-name="Password"></v-text-field>
+                data-vv-name="Password"
+              ></v-text-field>
 
               <v-text-field
-                v-validate="'required|confirmed:Password'"
                 v-model="rawConfirmPassword"
-                :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
-                :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
+                v-validate="'required|confirmed:Password'"
+                :append-icon="
+                  confirmPasswordHidden ? 'visibility' : 'visibility_off'
+                "
+                :append-icon-cb="
+                  () => (confirmPasswordHidden = !confirmPasswordHidden)
+                "
                 :type="confirmPasswordHidden ? 'password' : 'text'"
                 :error-messages="errors.collect('Confirm_Password')"
                 hint="At least 6 characters"
                 counter
                 label="Confirm New Password"
-                data-vv-name="Confirm_Password"></v-text-field>
+                data-vv-name="Confirm_Password"
+              ></v-text-field>
 
               <v-btn
                 type="submit"
-                class="v-accent">Save</v-btn>
+                class="v-accent"
+              >
+                Save
+              </v-btn>
 
               <div
                 v-if="error"
-                style="color: red">
+                style="color: red"
+              >
                 {{ error }}
               </div>
-
             </form>
           </v-card-text>
-
         </v-card>
       </v-flex>
     </v-layout>
@@ -84,7 +95,7 @@ import auth from '../../modules/auth'
 import _ from 'lodash'
 
 export default {
-  data() {
+  data () {
     let result = {}
     _.assign(result, this.$store.state.user)
     _.assign(result, {
@@ -98,7 +109,7 @@ export default {
     return result
   },
   methods: {
-    async submit() {
+    async submit () {
       this.error = ''
 
       let payload = {}

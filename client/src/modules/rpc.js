@@ -11,7 +11,7 @@ import config from '../config'
 axios.defaults.withCredentials = true
 
 export default {
-  async rpcRun(method, ...params) {
+  async rpcRun (method, ...params) {
     let payload = {
       method,
       params,
@@ -33,7 +33,7 @@ export default {
     }
   },
 
-  async rpcUpload(method, files, ...params) {
+  async rpcUpload (method, files, ...params) {
     let formData = new FormData()
     formData.append('method', method)
     formData.append('params', JSON.stringify(params))
@@ -61,7 +61,7 @@ export default {
     }
   },
 
-  async rpcDownload(method, ...params) {
+  async rpcDownload (method, ...params) {
     let payload = {
       method,
       params,

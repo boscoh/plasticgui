@@ -6,7 +6,8 @@
         style="
           margin-top: 10px;
           height: calc(100vh - 58px);
-          overflow: auto">
+          overflow: auto"
+      >
         <router-view></router-view>
       </div>
     </v-app>

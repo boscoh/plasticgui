@@ -2,38 +2,46 @@
   <v-toolbar
     dense
     light
-    color="white">
-
+    color="white"
+  >
     <v-avatar
       :tile="true"
-      :size="24">
+      :size="24"
+    >
       <img src="static/logo.png">
     </v-avatar>
 
     <v-toolbar-title
       style="cursor: pointer;"
-      @click="home()">
+      @click="home()"
+    >
       {{ title }}
     </v-toolbar-title>
 
     <v-spacer></v-spacer>
 
     <v-toolbar-items>
-      <v-btn 
+      <v-btn
         flat
         to="/"
-        router>Home
+        router
+      >
+        Home
       </v-btn>
-      <v-btn 
+      <v-btn
         v-show="user.authenticated"
         flat
         to="/private"
-        router>Private
+        router
+      >
+        Private
       </v-btn>
-      <v-btn 
+      <v-btn
         flat
         to="/about"
-        router>About
+        router
+      >
+        About
       </v-btn>
 
       <template v-if="isUser">
@@ -42,10 +50,12 @@
           bottom
           left
           flat
-          open-on-hover>
+          open-on-hover
+        >
           <v-btn
             slot="activator"
-            flat>
+            flat
+          >
             {{ user.name }}
             <v-icon>arrow_drop_down</v-icon>
           </v-btn>
@@ -67,13 +77,12 @@
         <v-btn
           v-else
           flat
-          to="/login">
+          to="/login"
+        >
           Login
         </v-btn>
       </template>
-
     </v-toolbar-items>
-
   </v-toolbar>
 </template>
 
@@ -82,25 +91,25 @@ import auth from '../modules/auth'
 import config from '../config'
 
 export default {
-  data() {
+  data () {
     return {
       title: config.title,
       isUser: config.isUser
     }
   },
   computed: {
-    user: function() {
+    user: function () {
       return this.$store.state.user
     }
   },
   methods: {
-    editUser() {
+    editUser () {
       this.$router.push('/edit-user')
     },
-    home() {
+    home () {
       this.$router.push('/')
     },
-    async logout() {
+    async logout () {
       await auth.logout()
       this.$router.push('/login')
     }

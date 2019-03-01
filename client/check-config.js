@@ -11,4 +11,3 @@ const defaultConfigJs = path.resolve(__dirname, 'src/default-config.js')
 if (!fs.existsSync(configJs)) {
   fs.copySync(defaultConfigJs, configJs)
 }
-

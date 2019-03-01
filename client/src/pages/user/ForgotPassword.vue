@@ -2,51 +2,60 @@
   <v-container>
     <v-layout
       justify-center
-      row>
+      row
+    >
       <v-flex
         xs8
         md4
-        lg4>
+        lg4
+      >
         <v-card class="mt-5">
-
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             Forgot your password to {{ title }}?
           </v-card-title>
 
           <v-card-text>
             <form
               novalidate
-              @submit.prevent="submit">
-
+              @submit.prevent="submit"
+            >
               <v-text-field
-                v-validate="'email'"
                 v-model="user.email"
+                v-validate="'email'"
                 :error-messages="errors.collect('email')"
                 label="E-mail address"
-                data-vv-name="email"></v-text-field>
+                data-vv-name="email"
+              ></v-text-field>
 
               <v-btn
                 type="submit"
-                class="v-accent">Send password reset email</v-btn>
+                class="v-accent"
+              >
+                Send password reset email
+              </v-btn>
 
               <v-progress-linear
                 v-if="isSending"
-                :indeterminate="true">
+                :indeterminate="true"
+              >
               </v-progress-linear>
 
               <div
                 v-if="error"
-                style="color: red">
+                style="color: red"
+              >
                 {{ error }}
               </div>
 
               <div style="margin-top: 3em">
                 New to {{ title }}? &nbsp;
-                <router-link to="/register">Register</router-link>
+                <router-link to="/register">
+                  Register
+                </router-link>
               </div>
-
             </form>
           </v-card-text>
         </v-card>
@@ -60,7 +69,7 @@ import auth from '../../modules/auth'
 import config from '../../config'
 
 export default {
-  data() {
+  data () {
     return {
       title: config.title,
       passwordHidden: true,
@@ -71,16 +80,16 @@ export default {
   },
   computed: {
     user: {
-      get() {
+      get () {
         return this.$store.state.user
       },
-      set(u) {
+      set (u) {
         this.$store.commit('setUser', u)
       }
     }
   },
   methods: {
-    async submit() {
+    async submit () {
       let payload = this.user.email
       console.log('> ForgotPassword.submit', payload)
       this.isSending = true

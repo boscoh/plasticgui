@@ -2,23 +2,28 @@
   <v-container>
     <v-layout
       justify-center
-      row>
+      row
+    >
       <v-flex
         xs6
         md4
-        lg4>
+        lg4
+      >
         <h2
           class="display-2 pt-5 pb-4"
-          style="text-align: center">
+          style="text-align: center"
+        >
           Admin - Users
         </h2>
 
         <v-card>
           <v-card-text>
             <v-list>
-              <template 
-                v-for="(user, i) in users">
-                <v-divider v-if="i > 0"></v-divider>
+              <template v-for="(user, i) in users">
+                <v-divider
+                  v-if="i > 0"
+                  :key="i"
+                ></v-divider>
                 <v-list-tile :key="i">
                   {{ user.name }}
                   <v-spacer></v-spacer>
@@ -26,7 +31,8 @@
                   <v-btn
                     flat
                     icon
-                    @click="deleteUser(user.id)">
+                    @click="deleteUser(user.id)"
+                  >
                     <v-icon>
                       delete
                     </v-icon>
@@ -35,7 +41,6 @@
               </template>
             </v-list>
           </v-card-text>
-
         </v-card>
       </v-flex>
     </v-layout>
@@ -47,13 +52,13 @@ import rpc from '../../modules/rpc'
 import config from '../../config'
 
 export default {
-  data() {
+  data () {
     return {
       title: config.title,
       users: []
     }
   },
-  async mounted() {
+  async mounted () {
     let response = await rpc.rpcRun('adminGetUsers')
     console.log('AdminUsers.mounted', response)
     if (response.result) {
@@ -62,7 +67,7 @@ export default {
     }
   },
   methods: {
-    async deleteUser(userId) {
+    async deleteUser (userId) {
       let response = await rpc.rpcRun('adminDeleteUser', userId)
       if (response.result) {
         console.log('> AdminUsers.deleteUser remaining', response.result.users)

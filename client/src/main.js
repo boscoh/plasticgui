@@ -19,7 +19,7 @@ Vue.use(VeeValidate)
 
 document.title = config.title
 
-async function init() {
+async function init () {
   if (config.isUser) {
     await auth.restoreLastUser()
   }

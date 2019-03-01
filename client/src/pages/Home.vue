@@ -1,12 +1,11 @@
 <template>
   <v-container
     fluid
-    grid-list-xl>
-
+    grid-list-xl
+  >
     <v-layout>
       <v-flex>
-        <h2
-          class="display-2 pt-4 pb-3">
+        <h2 class="display-2 pt-4 pb-3">
           Example Widgets
         </h2>
       </v-flex>
@@ -14,19 +13,21 @@
 
     <v-layout
       row
-      wrap>
-
+      wrap
+    >
       <v-flex xs4>
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             Webgl 3D Graphics
           </v-card-title>
           <v-card-text>
             <div
               id="webgl"
-              style="width: 100%; height: 200px"></div>
+              style="width: 100%; height: 200px"
+            ></div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -35,13 +36,15 @@
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             Canvas 2d Graphics
           </v-card-title>
           <v-card-text>
             <div
               id="rect"
-              style="width: 200px; height: 200px"></div>
+              style="width: 200px; height: 200px"
+            ></div>
             {{ pointerX }} - {{ pointerY }}
           </v-card-text>
         </v-card>
@@ -51,7 +54,8 @@
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             Live graphs
           </v-card-title>
           <v-card-text>
@@ -59,17 +63,19 @@
               <v-layout
                 v-for="(param, i) of sliders"
                 :key="i"
-                row>
+                row
+              >
                 <v-flex xs4>
                   {{ param.key }} = {{ param.value.toFixed(1) }}
                 </v-flex>
                 <v-flex xs8>
                   <v-slider
                     ref="slider"
+                    v-model="param.value"
                     :step="param.interval"
                     :max="param.max"
-                    v-model="param.value"
-                    @callback="changeGraph()"></v-slider>
+                    @callback="changeGraph()"
+                  ></v-slider>
                 </v-flex>
               </v-layout>
             </div>
@@ -81,23 +87,24 @@
             <v-layout>
               <v-flex
                 id="charts"
-                xs12></v-flex>
+                xs12
+              ></v-flex>
             </v-layout>
           </v-card-text>
         </v-card>
       </v-flex>
-
     </v-layout>
 
     <v-layout
       row
-      wrap>
-
+      wrap
+    >
       <v-flex xs4>
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             Server text
           </v-card-title>
           <v-card-text>
@@ -110,7 +117,8 @@
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             File Download
           </v-card-title>
           <v-card-text>
@@ -132,35 +140,38 @@
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             File Upload
           </v-card-title>
           <v-card-text>
             <upload-button
               :selected-callback="fileSelectedFunc"
-              title="Upload"></upload-button>
+              title="Upload"
+            ></upload-button>
             <v-list>
               <v-list-tile
                 v-for="(file, i) in uploadFiles"
-                :key="i">
+                :key="i"
+              >
                 <a :href="file.url">{{ file.name }}</a>
               </v-list-tile>
             </v-list>
           </v-card-text>
         </v-card>
       </v-flex>
-
     </v-layout>
 
     <v-layout
       row
-      wrap>
-
+      wrap
+    >
       <v-flex xs4>
         <v-card height="100%">
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             Task
           </v-card-title>
           <v-btn @click="setTask()">
@@ -171,9 +182,7 @@
           </v-card-text>
         </v-card>
       </v-flex>
-
     </v-layout>
-
   </v-container>
 </template>
 
@@ -189,7 +198,6 @@
 import _ from 'lodash'
 
 import rpc from '../modules/rpc'
-import vueSlider from 'vue-slider-component'
 import config from '../config'
 import ChartWidget from '../modules/chart-widget'
 import CanvasWidget from '../modules/canvas-widget'
@@ -199,7 +207,7 @@ import UploadButton from '../components/UploadButton'
 
 const THREE = require('three')
 
-function getRandomColor() {
+function getRandomColor () {
   let letters = '0123456789ABCDEF'
   let color = '#'
   for (let i = 0; i < 6; i++) {
@@ -210,8 +218,8 @@ function getRandomColor() {
 
 export default {
   name: 'Experiments',
-  components: { vueSlider, UploadButton },
-  data() {
+  components: { UploadButton },
+  data () {
     return {
       text: '',
       error: '',
@@ -243,23 +251,23 @@ export default {
   },
   watch: {
     sliders: {
-      handler() {
+      handler () {
         this.changeGraph()
       },
       deep: true
     }
   },
-  async mounted() {
+  async mounted () {
     let params = {}
     for (let slider of this.sliders) {
       params[slider.key] = slider.value
     }
 
     this.model = new Model(params)
-    this.model.initializeVars = function() {
+    this.model.initializeVars = function () {
       this.vars.y = 0
     }
-    this.model.update = function(iStep) {
+    this.model.update = function (iStep) {
       this.vars.y =
         this.params.alpha *
         Math.sin(this.params.beta * iStep + this.params.gamma)
@@ -307,19 +315,19 @@ export default {
     }
   },
   methods: {
-    async getReadme() {
+    async getReadme () {
       let response = await rpc.rpcDownload('publicDownloadGetReadme')
       if (response.error) {
         this.error = response.error.message
       }
     },
-    async getLogoPng() {
+    async getLogoPng () {
       let response = await rpc.rpcDownload('publicDownloadLogo')
       if (response.error) {
         this.error = response.error.message
       }
     },
-    drawCanvas() {
+    drawCanvas () {
       for (let i = 0; i < 10; i += 1) {
         let x1 = Math.random() * this.canvasWidget.drawWidth
         let y1 = Math.random() * this.canvasWidget.drawHeight
@@ -328,10 +336,10 @@ export default {
         this.canvasWidget.fillRect(x1, y1, x2 - x1, y2 - y1, getRandomColor())
       }
     },
-    selectFiles(filelist) {
+    selectFiles (filelist) {
       this.filelist = filelist
     },
-    async upload() {
+    async upload () {
       this.uploadFiles = []
       if (this.filelist) {
         this.error = ''
@@ -348,7 +356,7 @@ export default {
         this.error = 'No files selected'
       }
     },
-    changeGraph() {
+    changeGraph () {
       console.log('changed graph', this.sliders)
       for (let slider of this.sliders) {
         this.model.params[slider.key] = slider.value
@@ -360,13 +368,13 @@ export default {
       let yValues = this.model.soln.y
       this.chartWidget.updateDataset(0, xValues, yValues)
     },
-    randomizeGraph() {
+    randomizeGraph () {
       for (let slider of this.sliders) {
         slider.value = Math.random() * slider.max
       }
       this.changeGraph()
     },
-    async fileSelectedFunc(files) {
+    async fileSelectedFunc (files) {
       let response = await rpc.rpcUpload('publicUploadFiles', files)
       this.uploadFiles.length = 0
       for (let f of response.result.files) {
@@ -376,7 +384,7 @@ export default {
         })
       }
     },
-    async setTask() {
+    async setTask () {
       let response = await rpc.rpcRun('publicPushTask')
       console.log('setTask', response)
       this.task = response.result.attr

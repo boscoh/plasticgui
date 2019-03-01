@@ -2,29 +2,31 @@
   <v-container>
     <v-layout
       justify-center
-      row>
+      row
+    >
       <v-flex
         xs8
         md4
-        lg4>
+        lg4
+      >
         <v-card class="mt-5">
-
           <v-card-title
             primary-title
-            class="headline">
+            class="headline"
+          >
             {{ title }}
           </v-card-title>
 
           <v-card-text>
-            <form 
+            <form
               novalidate
               class="login-screen"
-              @submit.prevent="submit">
-
+              @submit.prevent="submit"
+            >
               <v-text-field
-                v-validate="'required|min:6'"
                 ref="password"
                 v-model="rawPassword"
+                v-validate="'required|min:6'"
                 :append-icon="passwordHidden ? 'visibility' : 'visibility_off'"
                 :append-icon-cb="() => (passwordHidden = !passwordHidden)"
                 :type="passwordHidden ? 'password' : 'text'"
@@ -33,13 +35,18 @@
                 counter
                 label="Password"
                 data-vv-name="password"
-                data-vv-delay="300"></v-text-field>
-              <v-text-field 
-                v-validate="'required|confirmed:password'"
+                data-vv-delay="300"
+              ></v-text-field>
+              <v-text-field
                 ref="password_confirmation"
                 v-model="rawPasswordConfirm"
-                :append-icon="confirmPasswordHidden ? 'visibility' : 'visibility_off'"
-                :append-icon-cb="() => (confirmPasswordHidden = !confirmPasswordHidden)"
+                v-validate="'required|confirmed:password'"
+                :append-icon="
+                  confirmPasswordHidden ? 'visibility' : 'visibility_off'
+                "
+                :append-icon-cb="
+                  () => (confirmPasswordHidden = !confirmPasswordHidden)
+                "
                 :type="confirmPasswordHidden ? 'password' : 'text'"
                 :error-messages="errors.collect('password_confirmation')"
                 hint="At least 6 characters"
@@ -47,18 +54,22 @@
                 label="Confirm Password"
                 target="password"
                 data-vv-name="password_confirmation"
-                data-vv-delay="300"></v-text-field>
+                data-vv-delay="300"
+              ></v-text-field>
 
-              <v-btn 
+              <v-btn
                 type="submit"
-                class="v-accent">Save</v-btn>
+                class="v-accent"
+              >
+                Save
+              </v-btn>
 
-              <div 
+              <div
                 v-if="error"
-                style="color: red">
+                style="color: red"
+              >
                 {{ error }}
               </div>
-
             </form>
           </v-card-text>
         </v-card>
@@ -70,7 +81,7 @@
 <script>
 import auth from '../../modules/auth'
 export default {
-  data() {
+  data () {
     let tokenId = this.$route.params.tokenId
     console.log(`> ResetPassword tokenId=${tokenId}`)
     return {
@@ -84,7 +95,7 @@ export default {
     }
   },
   methods: {
-    async submit() {
+    async submit () {
       this.error = ''
       let response = await auth.resetPassword(this.tokenId, this.rawPassword)
       if (response.result) {

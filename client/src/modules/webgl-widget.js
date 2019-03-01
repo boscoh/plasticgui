@@ -10,7 +10,7 @@ const THREE = require('three')
  */
 
 class Widget {
-  constructor(selector) {
+  constructor (selector) {
     this.selector = selector
     this.div = $(this.selector)
     this.divDom = this.div[0]
@@ -28,7 +28,7 @@ class Widget {
     this.isChanged = false
   }
 
-  bindCallbacks(dom) {
+  bindCallbacks (dom) {
     let bind = (eventType, callback) => {
       dom.addEventListener(eventType, callback)
     }
@@ -47,19 +47,19 @@ class Widget {
     bind('gestureend', e => this.gestureend(e))
   }
 
-  resize() {
+  resize () {
     // override
   }
 
-  width() {
+  width () {
     return this.div.width()
   }
 
-  height() {
+  height () {
     return this.div.height()
   }
 
-  calcPointerXY(event) {
+  calcPointerXY (event) {
     // calculation of div position by traversing DOM tree
     let top = 0
     let left = 0
@@ -93,12 +93,12 @@ class Widget {
     this.pointerY = this.eventY - top
   }
 
-  savePointerXY() {
+  savePointerXY () {
     this.savePointerX = this.pointerX
     this.savePointerY = this.pointerY
   }
 
-  mousedown(event) {
+  mousedown (event) {
     this.calcPointerXY(event)
 
     event.preventDefault()
@@ -118,7 +118,7 @@ class Widget {
     this.mousePressed = true
   }
 
-  mousemove(event) {
+  mousemove (event) {
     this.calcPointerXY(event)
 
     event.preventDefault()
@@ -152,7 +152,7 @@ class Widget {
     this.savePointerXY()
   }
 
-  mouseup(event) {
+  mouseup (event) {
     this.calcPointerXY(event)
 
     event.preventDefault()
@@ -165,14 +165,14 @@ class Widget {
     this.mousePressed = false
   }
 
-  gesturestart(event) {
+  gesturestart (event) {
     event.preventDefault()
     this.isGesture = true
     this.gestureRot = 0
     this.gestureScale = event.scale * event.scale
   }
 
-  gesturechange(event) {
+  gesturechange (event) {
     event.preventDefault()
     this.gesturedrag(
       event.rotation - this.gestureRot,
@@ -183,13 +183,13 @@ class Widget {
     this.gestureScale = event.scale
   }
 
-  gestureend(event) {
+  gestureend (event) {
     event.preventDefault()
     this.isGesture = false
     this.mousePressed = false
   }
 
-  mousewheel(event) {
+  mousewheel (event) {
     event.preventDefault()
 
     let wheel
@@ -205,21 +205,21 @@ class Widget {
 
   // override these functions
 
-  mousescroll(wheel) {}
+  mousescroll (wheel) {}
 
-  mouseclick(x, y) {}
+  mouseclick (x, y) {}
 
-  mousedoubleclick(x, y) {}
+  mousedoubleclick (x, y) {}
 
-  leftmousedrag(x0, y0, x1, y1) {}
+  leftmousedrag (x0, y0, x1, y1) {}
 
-  rightmousedrag(x0, y0, x1, y1) {}
+  rightmousedrag (x0, y0, x1, y1) {}
 
-  gesturedrag(rot, scale) {}
+  gesturedrag (rot, scale) {}
 
-  draw() {}
+  draw () {}
 
-  animate(elapsedTime) {}
+  animate (elapsedTime) {}
 }
 
 /**
@@ -230,8 +230,8 @@ class Widget {
  * - .draw()
  */
 
-function registerWidgetForAnimation(widget) {
-  function loop() {
+function registerWidgetForAnimation (widget) {
+  function loop () {
     window.requestAnimationFrame(loop)
 
     if (window.animationWidgets.length === 0) {
@@ -272,7 +272,7 @@ function registerWidgetForAnimation(widget) {
  */
 
 class WebglWidget extends Widget {
-  constructor(selector, backgroundColor = 0x000000) {
+  constructor (selector, backgroundColor = 0x000000) {
     super(selector)
 
     // determines how far away the camera is from the scene
@@ -334,14 +334,14 @@ class WebglWidget extends Widget {
     registerWidgetForAnimation(this)
   }
 
-  resize() {
+  resize () {
     this.camera.aspect = this.width() / this.height()
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(this.width(), this.height())
     this.isChanged = true
   }
 
-  setLights() {
+  setLights () {
     let directionalLight = new THREE.DirectionalLight(0xffffff)
     directionalLight.position.set(0.2, 0.2, 100).normalize()
     directionalLight.intensity = 1.2
@@ -349,11 +349,11 @@ class WebglWidget extends Widget {
     this.lights.push(new THREE.AmbientLight(0x202020))
   }
 
-  draw() {
+  draw () {
     this.renderer.render(this.scene, this.camera)
   }
 
-  animate(elapsedTime) {
+  animate (elapsedTime) {
     let msPerStep = 25
 
     let nStep = elapsedTime / msPerStep
@@ -366,9 +366,9 @@ class WebglWidget extends Widget {
     }
   }
 
-  update() {}
+  update () {}
 
-  getSceneRadius() {
+  getSceneRadius () {
     let sceneRadius = 0.0
 
     this.scene.traverse(object => {
@@ -388,14 +388,14 @@ class WebglWidget extends Widget {
     return sceneRadius
   }
 
-  moveCameraToShowAll() {
+  moveCameraToShowAll () {
     this.sceneRadius = this.getSceneRadius()
     this.zFront = -2.4 * this.sceneRadius
     this.zBack = 2.5 * this.sceneRadius
     this.setCameraZoomFromScene(2.5 * this.sceneRadius)
   }
 
-  rotateCameraAroundScene(
+  rotateCameraAroundScene (
     xRotAngle,
     yRotAngle,
     zRotAngle,
@@ -442,7 +442,7 @@ class WebglWidget extends Widget {
     this.isChanged = true
   }
 
-  setCameraZoomFromScene(newZoom) {
+  setCameraZoomFromScene (newZoom) {
     this.camera.position
       .sub(this.cameraFocus)
       .normalize()
@@ -467,7 +467,7 @@ class WebglWidget extends Widget {
     this.isChanged = true
   }
 
-  getDepth(pos) {
+  getDepth (pos) {
     let origin = this.scene.position
 
     let cameraDir = origin
@@ -480,7 +480,7 @@ class WebglWidget extends Widget {
     return posRelativeToOrigin.dot(cameraDir)
   }
 
-  calcScreenXYOfPos(obj) {
+  calcScreenXYOfPos (obj) {
     let widthHalf = 0.5 * this.width()
     let heightHalf = 0.5 * this.height()
 
@@ -494,7 +494,7 @@ class WebglWidget extends Widget {
     )
   }
 
-  getClickedMeshes() {
+  getClickedMeshes () {
     let screenXY = new THREE.Vector2().set(
       -1 + (this.pointerX / this.width()) * 2,
       +1 - (this.pointerY / this.height()) * 2
@@ -505,7 +505,7 @@ class WebglWidget extends Widget {
     return this.raycaster.intersectObjects(this.clickableMeshes)
   }
 
-  leftmousedrag(x0, y0, x1, y1) {
+  leftmousedrag (x0, y0, x1, y1) {
     this.rotateCameraAroundScene(
       this.degToRad(y1 - y0),
       this.degToRad(x1 - x0),
@@ -513,7 +513,7 @@ class WebglWidget extends Widget {
     )
   }
 
-  rightmousedrag(x0, y0, x1, y1) {
+  rightmousedrag (x0, y0, x1, y1) {
     let calcRadial = (x, y) => {
       x -= this.width() / 2
       y -= this.height() / 2
@@ -542,28 +542,28 @@ class WebglWidget extends Widget {
     this.setCameraZoomFromScene(this.zoom * ratio)
   }
 
-  degToRad(deg) {
+  degToRad (deg) {
     return (deg * Math.PI) / 180.0
   }
 
-  mousescroll(wheel) {
+  mousescroll (wheel) {
     let ratio = Math.pow(1 + Math.abs(wheel) / 2, wheel > 0 ? 1 : -1)
     this.setCameraZoomFromScene(this.zoom * ratio)
   }
 
-  gesturedrag(rotDiff, ratio) {
+  gesturedrag (rotDiff, ratio) {
     this.rotateCameraAroundScene(0, 0, this.degToRad(rotDiff * 2))
     this.setCameraZoomFromScene(this.zoom * ratio * ratio)
   }
 
-  gesturestart(event) {
+  gesturestart (event) {
     event.preventDefault()
     this.isGesture = true
     this.gestureRot = 0
     this.gestureScale = event.scale * event.scale
   }
 
-  gestureend(event) {
+  gestureend (event) {
     event.preventDefault()
     this.isGesture = false
     this.mousePressed = false
@@ -575,7 +575,7 @@ class WebglWidget extends Widget {
  */
 
 class PopupText {
-  constructor(
+  constructor (
     selector,
     backgroundColor = 'white',
     textColor = 'black',
@@ -614,7 +614,7 @@ class PopupText {
     this.mainDiv.append(this.arrowDiv)
   }
 
-  move(x, y) {
+  move (x, y) {
     let mainDivPos = this.mainDiv.position()
     let width = this.textDiv.innerWidth()
     let height = this.textDiv.innerHeight()
@@ -644,16 +644,16 @@ class PopupText {
     })
   }
 
-  hide() {
+  hide () {
     this.textDiv.css('display', 'none')
     this.arrowDiv.css('display', 'none')
   }
 
-  html(text) {
+  html (text) {
     this.textDiv.html(text)
   }
 
-  remove() {
+  remove () {
     this.textDiv.remove()
     this.arrowDiv.remove()
   }

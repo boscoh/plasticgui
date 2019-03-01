@@ -4,7 +4,7 @@
 import _ from 'lodash'
 
 class Model {
-  constructor(params) {
+  constructor (params) {
     this.params = _.assign({}, params)
     this.vars = {}
     this.soln = {}
@@ -15,24 +15,24 @@ class Model {
   /**
    * To be overriden
    */
-  initializeVars() {
+  initializeVars () {
     // set vars[key] values
   }
 
   /**
    * To be overriden
    */
-  update(iStep) {
+  update (iStep) {
     // update this.vars[key], access this.lastVars[key]
   }
 
-  resetSoln() {
+  resetSoln () {
     for (let solnValues of _.values(this.soln)) {
       solnValues.length = 0
     }
   }
 
-  integrate(nStep) {
+  integrate (nStep) {
     for (let iStep = 0; iStep < nStep; iStep += 1) {
       for (let key of _.keys(this.vars)) {
         if (key in this.soln) {

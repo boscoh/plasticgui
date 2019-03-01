@@ -4,7 +4,8 @@
     <input
       multiple
       type="file"
-      @change="fileSelected">
+      @change="fileSelected"
+    >
   </v-btn>
 </template>
 
@@ -21,7 +22,7 @@ export default {
     }
   },
   methods: {
-    fileSelected(e) {
+    fileSelected (e) {
       if (this.selectedCallback) {
         if (e.target.files[0]) {
           this.selectedCallback(e.target.files)
