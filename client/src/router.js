@@ -20,12 +20,14 @@ let routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    isNavbar: true
   },
   {
     path: '/about',
     name: 'about',
-    component: About
+    component: About,
+    isNavbar: true
   }
 ]
 

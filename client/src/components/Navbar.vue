@@ -22,29 +22,25 @@
 
     <v-toolbar-items>
       <v-btn
+        v-for="entry in mainEntries"
+        :key="entry.path"
         flat
-        to="/"
+        :to="entry.path"
         router
       >
-        Home
-      </v-btn>
-      <v-btn
-        v-show="user.authenticated"
-        flat
-        to="/private"
-        router
-      >
-        Private
-      </v-btn>
-      <v-btn
-        flat
-        to="/about"
-        router
-      >
-        About
+        {{ entry.title }}
       </v-btn>
 
       <template v-if="isUser">
+        <v-btn
+          v-show="user.authenticated"
+          flat
+          to="/private"
+          router
+        >
+          Private
+        </v-btn>
+
         <v-menu
           v-if="user.authenticated"
           bottom
@@ -89,10 +85,22 @@
 <script>
 import auth from '../modules/auth'
 import config from '../config'
+import router from '../router'
+
+let mainEntries = []
+for (let route of router.options.routes) {
+  if (route.isNavbar) {
+    mainEntries.push({
+      path: route.path,
+      title: _.capitalize(route.name)
+    })
+  }
+}
 
 export default {
   data () {
     return {
+      mainEntries,
       title: config.title,
       isUser: config.isUser
     }
@@ -116,9 +124,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.tabs {
-  width: 50%;
-}
-</style>

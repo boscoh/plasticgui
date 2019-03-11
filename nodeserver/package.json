@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node src/bin/www",
+    "watch": "nodemon --watch src src/bin/www",
     "format": "prettier-standard 'src/**/*.js'",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },
@@ -45,7 +46,9 @@
     "prettier-standard": "^8.0.1",
     "rimraf": "*",
     "sequelize": "*",
-    "sequelize-json": "*",
-    "sqlite3": "^4.0.2"
+    "sequelize-json": "*"
+  },
+  "devDependencies": {
+    "sqlite3": "^4.0.6"
   }
 }
