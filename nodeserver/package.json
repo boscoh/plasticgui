@@ -20,8 +20,8 @@
   "dependencies": {
     "babel-eslint": "^8.2.1",
     "bcryptjs": "*",
-    "body-parser": "*",
-    "debug": "*",
+    "body-parser": "^1.19.0",
+    "debug": "^4.1.1",
     "denodeify": "*",
     "eslint": "^4.15.0",
     "eslint-config-prettier": "^2.9.0",
@@ -29,26 +29,26 @@
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.1",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "express": "*",
-    "express-session": "*",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
     "fs-extra": "^5.0.0",
     "morgan": "^1.9.1",
-    "multer": "*",
-    "nodemailer": "^4.6.7",
-    "opn": "^5.3.0",
+    "multer": "^1.4.1",
+    "nodemailer": "^4.7.0",
+    "opn": "^5.5.0",
     "passport": "*",
     "passport-local": "*",
     "prettier-standard": "^8.0.1",
-    "rimraf": "*",
-    "sequelize": "*",
+    "rimraf": "^2.6.3",
+    "sequelize": "^5.9.2",
     "sequelize-json": "*"
   },
   "devDependencies": {
-    "sqlite3": "^4.0.6"
+    "sqlite3": "^4.0.9"
   }
 }
